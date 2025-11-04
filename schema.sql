@@ -1,8 +1,28 @@
+-- Waste Management System - 10 Table Schema Based on ER Diagram
 
+-- ===== ENTITY TABLES (10 Total) =====
 
--- ===== ENTITY TABLES =====
+-- 1. Bins table
+CREATE TABLE Bins (
+    Bin_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Status VARCHAR(20) DEFAULT 'active',
+    Fill_Level INT DEFAULT 0,
+    Sensor BOOLEAN DEFAULT TRUE,
+    Location VARCHAR(255),
+    Type VARCHAR(50)
+);
 
--- Citizen table
+-- 2. Area table
+CREATE TABLE Area (
+    Area_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Area_Name VARCHAR(100) NOT NULL,
+    Area_Code VARCHAR(20) UNIQUE NOT NULL,
+    Population INT,
+    Supervisor VARCHAR(100),
+    Description TEXT
+);
+
+-- 3. Citizen table
 CREATE TABLE Citizen (
     Citizen_ID INT PRIMARY KEY AUTO_INCREMENT,
     Name VARCHAR(100) NOT NULL,
@@ -13,17 +33,7 @@ CREATE TABLE Citizen (
     Registration_Date DATE DEFAULT (CURRENT_DATE)
 );
 
--- Area table
-CREATE TABLE Area (
-    Area_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Area_Name VARCHAR(100) NOT NULL,
-    Area_Code VARCHAR(20) UNIQUE NOT NULL,
-    Population INT,
-    Supervisor VARCHAR(100),
-    Description TEXT
-);
-
--- Bill table
+-- 4. Bill table
 CREATE TABLE Bill (
     Bill_ID INT PRIMARY KEY AUTO_INCREMENT,
     Status VARCHAR(20) DEFAULT 'unpaid',
@@ -33,7 +43,7 @@ CREATE TABLE Bill (
     Description TEXT
 );
 
--- Payment table
+-- 5. Payment table
 CREATE TABLE Payment (
     Payment_ID INT PRIMARY KEY AUTO_INCREMENT,
     Amount DECIMAL(10,2) NOT NULL,
@@ -43,18 +53,17 @@ CREATE TABLE Payment (
     Notes TEXT
 );
 
--- Waste table
-CREATE TABLE Waste (
-    Waste_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Name VARCHAR(100) NOT NULL,
-    Category VARCHAR(50),
-    Weight DECIMAL(10,2),
-    Volume DECIMAL(10,2),
-    Hazardous BOOLEAN DEFAULT FALSE,
-    Description TEXT
+-- 6. Crew table
+CREATE TABLE Crew (
+    Crew_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Crew_Name VARCHAR(100) NOT NULL,
+    Contact_Info VARCHAR(100),
+    Size INT,
+    Supervisor VARCHAR(100),
+    Specialization VARCHAR(50)
 );
 
--- Recycling_Center table
+-- 7. Recycling_Center table
 CREATE TABLE Recycling_Center (
     Center_ID INT PRIMARY KEY AUTO_INCREMENT,
     Capacity INT,
@@ -65,7 +74,7 @@ CREATE TABLE Recycling_Center (
     Established_Date DATE
 );
 
--- Collection_Schedules table
+-- 8. Collection_Schedules table
 CREATE TABLE Collection_Schedules (
     Schedule_ID INT PRIMARY KEY AUTO_INCREMENT,
     Schedule_Date DATE NOT NULL,
@@ -75,88 +84,18 @@ CREATE TABLE Collection_Schedules (
     Notes TEXT
 );
 
--- Bins table
-CREATE TABLE Bins (
-    Bin_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Status VARCHAR(20) DEFAULT 'active',
-    Fill_Level INT DEFAULT 0,
-    Sensor BOOLEAN DEFAULT TRUE,
-    Location VARCHAR(255),
-    Type VARCHAR(50),
-    Last_Emptied DATETIME
+-- 9. Waste table
+CREATE TABLE Waste (
+    Waste_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Name VARCHAR(100) NOT NULL,
+    Category VARCHAR(50),
+    Weight DECIMAL(10,2),
+    Volume DECIMAL(10,2),
+    Hazardous BOOLEAN DEFAULT FALSE,
+    Description TEXT
 );
 
--- Crew table
-CREATE TABLE Crew (
-    Crew_ID INT PRIMARY KEY AUTO_INCREMENT,
-    Crew_Name VARCHAR(100) NOT NULL,
-    Contact_Info VARCHAR(100),
-    Size INT,
-    Supervisor VARCHAR(100),
-    Specialization VARCHAR(50)
-);
-
--- ===== RELATIONSHIP TABLES (Binary Relationships) =====
-
--- LIVES: Citizen lives in Area (Many-to-Many)
-CREATE TABLE LIVES (
-    Citizen_ID INT NOT NULL,
-    Area_ID INT NOT NULL,
-    PRIMARY KEY (Citizen_ID, Area_ID),
-    FOREIGN KEY (Citizen_ID) REFERENCES Citizen(Citizen_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Area_ID) REFERENCES Area(Area_ID) ON DELETE CASCADE
-);
-
--- HAS_Bill: Citizen has Bill (Many-to-Many)
-CREATE TABLE HAS_Bill (
-    Citizen_ID INT NOT NULL,
-    Bill_ID INT NOT NULL,
-    PRIMARY KEY (Citizen_ID, Bill_ID),
-    FOREIGN KEY (Citizen_ID) REFERENCES Citizen(Citizen_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Bill_ID) REFERENCES Bill(Bill_ID) ON DELETE CASCADE
-);
-
--- MAKES: Citizen makes Payment (Many-to-Many)
-CREATE TABLE MAKES (
-    Citizen_ID INT NOT NULL,
-    Payment_ID INT NOT NULL,
-    PRIMARY KEY (Citizen_ID, Payment_ID),
-    FOREIGN KEY (Citizen_ID) REFERENCES Citizen(Citizen_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Payment_ID) REFERENCES Payment(Payment_ID) ON DELETE CASCADE
-);
-
--- PROCESSED_BY: Waste is processed by Recycling_Center (Many-to-Many)
-CREATE TABLE PROCESSED_BY (
-    Waste_ID INT NOT NULL,
-    Center_ID INT NOT NULL,
-    PRIMARY KEY (Waste_ID, Center_ID),
-    FOREIGN KEY (Waste_ID) REFERENCES Waste(Waste_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Center_ID) REFERENCES Recycling_Center(Center_ID) ON DELETE CASCADE
-);
-
--- HAS_Bins: Area has Bins (Many-to-Many)
-CREATE TABLE HAS_Bins (
-    Area_ID INT NOT NULL,
-    Bin_ID INT NOT NULL,
-    PRIMARY KEY (Area_ID, Bin_ID),
-    FOREIGN KEY (Area_ID) REFERENCES Area(Area_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Bin_ID) REFERENCES Bins(Bin_ID) ON DELETE CASCADE
-);
-
--- ===== TERNARY RELATIONSHIP TABLES =====
-
--- GENERATES: Citizen generates Waste for Payment (Ternary)
-CREATE TABLE GENERATES (
-    Citizen_ID INT NOT NULL,
-    Waste_ID INT NOT NULL,
-    Payment_ID INT NOT NULL,
-    PRIMARY KEY (Citizen_ID, Waste_ID, Payment_ID),
-    FOREIGN KEY (Citizen_ID) REFERENCES Citizen(Citizen_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Waste_ID) REFERENCES Waste(Waste_ID) ON DELETE CASCADE,
-    FOREIGN KEY (Payment_ID) REFERENCES Payment(Payment_ID) ON DELETE CASCADE
-);
-
--- HAS_Schedule: Area has Collection_Schedules with Crew (Ternary)
+-- 10. HAS_Schedule table (Junction/Relationship table for Area-Schedule-Crew ternary relationship)
 CREATE TABLE HAS_Schedule (
     Area_ID INT NOT NULL,
     Schedule_ID INT NOT NULL,
@@ -169,12 +108,12 @@ CREATE TABLE HAS_Schedule (
 
 -- ===== INSERT DUMMY DATA =====
 
--- Insert Citizens
-INSERT INTO Citizen (Name, Address, Contact_Info, DOB, Gender) VALUES
-('John Doe', '123 Main St, City A', 'john@example.com', '1985-05-15', 'Male'),
-('Jane Smith', '456 Oak Ave, City B', 'jane@example.com', '1990-08-22', 'Female'),
-('Alice Johnson', '789 Pine Rd, City C', 'alice@example.com', '1978-12-10', 'Female'),
-('Bob Brown', '321 Elm St, City D', 'bob@example.com', '1982-03-05', 'Male');
+-- Insert Bins
+INSERT INTO Bins (Status, Fill_Level, Sensor, Location, Type) VALUES
+('active', 75, TRUE, 'Corner of Main St', 'General Waste'),
+('maintenance', 90, FALSE, 'Park Entrance', 'Recycling'),
+('active', 45, TRUE, 'Residential Area', 'Organic'),
+('full', 100, TRUE, 'Commercial Zone', 'Hazardous');
 
 -- Insert Areas
 INSERT INTO Area (Area_Name, Area_Code, Population, Supervisor, Description) VALUES
@@ -182,6 +121,13 @@ INSERT INTO Area (Area_Name, Area_Code, Population, Supervisor, Description) VAL
 ('Suburb North', 'SN002', 30000, 'Sarah Lee', 'Northern residential area'),
 ('Industrial Zone', 'IZ003', 20000, 'Tom Garcia', 'Manufacturing and warehouses'),
 ('Residential East', 'RE004', 40000, 'Lisa Chen', 'Eastern residential community');
+
+-- Insert Citizens
+INSERT INTO Citizen (Name, Address, Contact_Info, DOB, Gender) VALUES
+('John Doe', '123 Main St, City A', 'john@example.com', '1985-05-15', 'Male'),
+('Jane Smith', '456 Oak Ave, City B', 'jane@example.com', '1990-08-22', 'Female'),
+('Alice Johnson', '789 Pine Rd, City C', 'alice@example.com', '1978-12-10', 'Female'),
+('Bob Brown', '321 Elm St, City D', 'bob@example.com', '1982-03-05', 'Male');
 
 -- Insert Bills
 INSERT INTO Bill (Status, Due_Date, Amount, Issue_Date, Description) VALUES
@@ -197,12 +143,12 @@ INSERT INTO Payment (Amount, Method, Reference_Number, Date, Notes) VALUES
 (100.00, 'Cash', 'PAY003', '2025-10-22 16:45:00', 'Late fee applied'),
 (175.00, 'Online', 'PAY004', '2025-10-30 09:00:00', 'Auto payment');
 
--- Insert Waste types
-INSERT INTO Waste (Name, Category, Weight, Volume, Hazardous, Description) VALUES
-('Plastic Bottles', 'Recyclable', 5.5, 10.0, FALSE, 'Single-use plastic bottles'),
-('Electronic Waste', 'Hazardous', 2.0, 3.0, TRUE, 'Old computers and phones'),
-('Organic Waste', 'Biodegradable', 15.0, 20.0, FALSE, 'Food and garden waste'),
-('Metal Scrap', 'Recyclable', 8.0, 12.0, FALSE, 'Iron and aluminum scrap');
+-- Insert Crews
+INSERT INTO Crew (Crew_Name, Contact_Info, Size, Supervisor, Specialization) VALUES
+('Alpha Team', 'alpha@crew.com', 5, 'John Leader', 'General Collection'),
+('Beta Squad', 'beta@crew.com', 4, 'Jane Supervisor', 'Recycling'),
+('Gamma Group', 'gamma@crew.com', 6, 'Bob Manager', 'Hazardous Waste'),
+('Delta Unit', 'delta@crew.com', 3, 'Alice Coordinator', 'Maintenance');
 
 -- Insert Recycling Centers
 INSERT INTO Recycling_Center (Capacity, Location, Operating_Hours, Manager, Contact, Established_Date) VALUES
@@ -218,65 +164,14 @@ INSERT INTO Collection_Schedules (Schedule_Date, Status, Frequency, Assigned_Veh
 ('2025-10-29', 'in_progress', 'bi-weekly', 'Truck C', 'Industrial zone sweep'),
 ('2025-10-30', 'cancelled', 'monthly', 'Truck D', 'Rescheduled for weather');
 
--- Insert Bins
-INSERT INTO Bins (Status, Fill_Level, Sensor, Location, Type, Last_Emptied) VALUES
-('active', 75, TRUE, 'Corner of Main St', 'General Waste', '2025-10-25 08:00:00'),
-('maintenance', 90, FALSE, 'Park Entrance', 'Recycling', '2025-10-24 10:00:00'),
-('active', 45, TRUE, 'Residential Area', 'Organic', '2025-10-26 14:00:00'),
-('full', 100, TRUE, 'Commercial Zone', 'Hazardous', '2025-10-23 16:00:00');
+-- Insert Waste types
+INSERT INTO Waste (Name, Category, Weight, Volume, Hazardous, Description) VALUES
+('Plastic Bottles', 'Recyclable', 5.5, 10.0, FALSE, 'Single-use plastic bottles'),
+('Electronic Waste', 'Hazardous', 2.0, 3.0, TRUE, 'Old computers and phones'),
+('Organic Waste', 'Biodegradable', 15.0, 20.0, FALSE, 'Food and garden waste'),
+('Metal Scrap', 'Recyclable', 8.0, 12.0, FALSE, 'Iron and aluminum scrap');
 
--- Insert Crews
-INSERT INTO Crew (Crew_Name, Contact_Info, Size, Supervisor, Specialization) VALUES
-('Alpha Team', 'alpha@crew.com', 5, 'John Leader', 'General Collection'),
-('Beta Squad', 'beta@crew.com', 4, 'Jane Supervisor', 'Recycling'),
-('Gamma Group', 'gamma@crew.com', 6, 'Bob Manager', 'Hazardous Waste'),
-('Delta Unit', 'delta@crew.com', 3, 'Alice Coordinator', 'Maintenance');
-
--- ===== INSERT RELATIONSHIP DATA =====
-
--- LIVES: Citizens live in Areas
-INSERT INTO LIVES (Citizen_ID, Area_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
-
--- HAS_Bill: Citizens have Bills
-INSERT INTO HAS_Bill (Citizen_ID, Bill_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
-
--- MAKES: Citizens make Payments
-INSERT INTO MAKES (Citizen_ID, Payment_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
-
--- PROCESSED_BY: Waste is processed by Recycling Centers
-INSERT INTO PROCESSED_BY (Waste_ID, Center_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 1);
-
--- HAS_Bins: Areas have Bins
-INSERT INTO HAS_Bins (Area_ID, Bin_ID) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4);
-
--- GENERATES: Citizens generate Waste for Payment (Ternary)
-INSERT INTO GENERATES (Citizen_ID, Waste_ID, Payment_ID) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4);
-
--- HAS_Schedule: Areas have Collection Schedules with Crews (Ternary)
+-- Insert HAS_Schedule relationships (Area-Schedule-Crew ternary)
 INSERT INTO HAS_Schedule (Area_ID, Schedule_ID, Crew_ID) VALUES
 (1, 1, 1),
 (2, 2, 2),
