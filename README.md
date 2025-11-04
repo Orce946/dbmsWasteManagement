@@ -83,34 +83,102 @@ Create `.env` file in `backend/` folder:
 ```
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_USER=wm_user
-DB_PASSWORD=wm_pass
-DB_NAME=waste_management
-PORT=3000
-```
-
-Or use XAMPP root (default):
-```
-DB_HOST=127.0.0.1
-DB_PORT=3306
 DB_USER=root
 DB_PASSWORD=
 DB_NAME=waste_management
 PORT=3000
 ```
 
+Or if using custom XAMPP user:
+```
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=wm_user
+DB_PASSWORD=wm_pass
+DB_NAME=waste_management
+PORT=3000
+```
+
 ### Start Backend Server
 ```bash
+cd backend
 node server.js
 ```
 
 Server runs on: http://localhost:3000
 
-**Available Endpoints:**
-- `GET /api/health` → Check API status
+### 📚 Complete API Endpoints
+
+**Health & Status:**
+- `GET /api/health` → Check API and database connection
+
+**Citizen Endpoints:**
 - `GET /api/citizens` → Fetch all citizens
+- `GET /api/citizens/:id` → Fetch specific citizen
 - `POST /api/citizens` → Add new citizen
-- More endpoints for other entities (to be added)
+- `PUT /api/citizens/:id` → Update citizen
+- `DELETE /api/citizens/:id` → Delete citizen
+
+**Area Endpoints:**
+- `GET /api/areas` → Fetch all areas
+- `POST /api/areas` → Add new area
+
+**Bill Endpoints:**
+- `GET /api/bills` → Fetch all bills
+- `POST /api/bills` → Add new bill
+
+**Payment Endpoints:**
+- `GET /api/payments` → Fetch all payments
+- `POST /api/payments` → Add new payment
+
+**Waste Endpoints:**
+- `GET /api/waste` → Fetch all waste types
+- `POST /api/waste` → Add new waste type
+
+**Recycling Center Endpoints:**
+- `GET /api/recycling-centers` → Fetch all recycling centers
+- `POST /api/recycling-centers` → Add new recycling center
+
+**Collection Schedule Endpoints:**
+- `GET /api/schedules` → Fetch all schedules
+- `POST /api/schedules` → Add new schedule
+
+**Bins Endpoints:**
+- `GET /api/bins` → Fetch all bins
+- `POST /api/bins` → Add new bin
+
+**Crew Endpoints:**
+- `GET /api/crews` → Fetch all crews
+- `POST /api/crews` → Add new crew
+
+**Relationship Endpoints (Binary & Ternary):**
+- `GET /api/relationships/lives` → Citizen-Area relationships
+- `POST /api/relationships/lives` → Link citizen to area
+- `GET /api/relationships/has-bill` → Citizen-Bill relationships
+- `POST /api/relationships/has-bill` → Link citizen to bill
+- `GET /api/relationships/generates` → Citizen-Waste-Payment (ternary)
+- `POST /api/relationships/generates` → Link citizen waste generation
+- `GET /api/relationships/has-schedule` → Area-Schedule-Crew (ternary)
+- `POST /api/relationships/has-schedule` → Link area to schedule with crew
+
+### Example API Calls
+
+**Fetch all citizens:**
+```bash
+curl http://localhost:3000/api/citizens | jq
+```
+
+**Add a new citizen:**
+```bash
+curl -X POST http://localhost:3000/api/citizens \
+  -H "Content-Type: application/json" \
+  -d '{"Name":"John Smith","Address":"123 Main St","Contact_Info":"john@example.com","DOB":"1990-05-15","Gender":"Male"}'
+```
+
+**Fetch citizen-area relationships:**
+```bash
+curl http://localhost:3000/api/relationships/lives | jq
+```
 
 ## 💻 Frontend
 
