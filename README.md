@@ -18,21 +18,27 @@ A complete waste management system with MySQL database, ER diagram relationships
 
 ## 🗄️ Database Schema
 
-**9 Entity Tables:**
-- Citizen, Area, Bill, Payment, Waste, Recycling_Center, Collection_Schedules, Bins, Crew
+**10 Tables** based on the ER Diagram:
 
-**5 Binary Relationships:**
-- LIVES (Citizen → Area)
-- HAS_Bill (Citizen → Bill)
-- MAKES (Citizen → Payment)
-- PROCESSED_BY (Waste → Recycling_Center)
-- HAS_Bins (Area → Bins)
+**Entity Tables (9):**
+- Bins (Bin_ID, Status, Fill_Level, Sensor, Location, Type)
+- Area (Area_ID, Area_Name, Area_Code, Population, Supervisor, Description)
+- Citizen (Citizen_ID, Name, Address, Contact_Info, DOB, Gender, Registration_Date)
+- Bill (Bill_ID, Status, Due_Date, Amount, Issue_Date, Description)
+- Payment (Payment_ID, Amount, Method, Date, Reference_Number, Notes)
+- Crew (Crew_ID, Crew_Name, Contact_Info, Size, Supervisor, Specialization)
+- Recycling_Center (Center_ID, Capacity, Location, Operating_Hours, Manager, Contact, Established_Date)
+- Collection_Schedules (Schedule_ID, Schedule_Date, Status, Frequency, Assigned_Vehicle, Notes)
+- Waste (Waste_ID, Name, Category, Weight, Volume, Hazardous, Description)
 
-**2 Ternary Relationships:**
-- GENERATES (Citizen + Waste → Payment)
-- HAS_Schedule (Area + Schedule → Crew)
+**Junction/Relationship Table (1):**
+- HAS_Schedule: Area-Schedule-Crew ternary relationship with foreign keys and CASCADE delete
 
-All tables include **foreign key constraints** with `ON DELETE CASCADE`.
+**Features:**
+- ✅ Foreign key constraints
+- ✅ ON DELETE CASCADE for referential integrity
+- ✅ 40 sample records pre-loaded
+- ✅ Proper data types and defaults
 
 ## 🚀 Setup with XAMPP (Recommended)
 
