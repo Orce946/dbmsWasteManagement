@@ -4,7 +4,7 @@
 
 -- 1. Bins table
 CREATE TABLE Bins (
-    Bin_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Bin_ID VARCHAR(10) PRIMARY KEY,
     Status VARCHAR(20) DEFAULT 'active',
     Fill_Level INT DEFAULT 0,
     Sensor BOOLEAN DEFAULT TRUE,
@@ -14,7 +14,7 @@ CREATE TABLE Bins (
 
 -- 2. Area table
 CREATE TABLE Area (
-    Area_ID INT PRIMARY KEY AUTO_INCREMENT,
+    Area_ID VARCHAR(10) PRIMARY KEY,
     Area_Name VARCHAR(100) NOT NULL,
     Area_Code VARCHAR(20) UNIQUE NOT NULL,
     Population INT,
@@ -97,7 +97,7 @@ CREATE TABLE Waste (
 
 -- 10. HAS_Schedule table (Junction/Relationship table for Area-Schedule-Crew ternary relationship)
 CREATE TABLE HAS_Schedule (
-    Area_ID INT NOT NULL,
+    Area_ID VARCHAR(10) NOT NULL,
     Schedule_ID INT NOT NULL,
     Crew_ID INT NOT NULL,
     PRIMARY KEY (Area_ID, Schedule_ID, Crew_ID),
@@ -477,13 +477,13 @@ INSERT INTO Waste (Name, Category, Weight, Volume, Hazardous, Description) VALUE
 
 -- Insert HAS_Schedule relationships (Area-Schedule-Crew ternary - 10 rows)
 INSERT INTO HAS_Schedule (Area_ID, Schedule_ID, Crew_ID) VALUES
-(1, 1, 1),
-(2, 2, 2),
-(3, 3, 3),
-(4, 4, 4),
-(5, 5, 5),
-(6, 6, 1),
-(7, 7, 2),
-(8, 8, 3),
-(9, 9, 4),
-(10, 10, 5);
+('A-101', 1, 1),
+('A-102', 2, 2),
+('A-103', 3, 3),
+('A-104', 4, 4),
+('A-105', 5, 5),
+('A-106', 6, 1),
+('A-107', 7, 2),
+('A-108', 8, 3),
+('A-109', 9, 4),
+('A-110', 10, 5);
