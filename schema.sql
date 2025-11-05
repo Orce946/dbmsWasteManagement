@@ -106,6 +106,72 @@ CREATE TABLE HAS_Schedule (
     FOREIGN KEY (Crew_ID) REFERENCES Crew(Crew_ID) ON DELETE CASCADE
 );
 
+-- ===== ALTER TABLE CONSTRAINTS =====
+
+-- Add indexes for better query performance and data integrity
+
+-- Add indexes to Bins table
+ALTER TABLE Bins
+ADD INDEX idx_bins_status (Status),
+ADD INDEX idx_bins_fill_level (Fill_Level),
+ADD INDEX idx_bins_location (Location);
+
+-- Add indexes to Area table
+ALTER TABLE Area
+ADD INDEX idx_area_code (Area_Code),
+ADD INDEX idx_area_name (Area_Name),
+ADD CONSTRAINT chk_area_population CHECK (Population >= 0);
+
+-- Add indexes to Citizen table
+ALTER TABLE Citizen
+ADD INDEX idx_citizen_name (Name),
+ADD INDEX idx_citizen_contact (Contact_Info),
+ADD INDEX idx_citizen_registration (Registration_Date);
+
+-- Add indexes to Bill table
+ALTER TABLE Bill
+ADD INDEX idx_bill_status (Status),
+ADD INDEX idx_bill_amount (Amount),
+ADD CONSTRAINT chk_bill_amount CHECK (Amount > 0);
+
+-- Add indexes to Payment table
+ALTER TABLE Payment
+ADD INDEX idx_payment_method (Method),
+ADD INDEX idx_payment_amount (Amount),
+ADD INDEX idx_payment_date (Date),
+ADD CONSTRAINT chk_payment_amount CHECK (Amount > 0);
+
+-- Add indexes to Crew table
+ALTER TABLE Crew
+ADD INDEX idx_crew_name (Crew_Name),
+ADD INDEX idx_crew_size (Size),
+ADD CONSTRAINT chk_crew_size CHECK (Size > 0);
+
+-- Add indexes to Recycling_Center table
+ALTER TABLE Recycling_Center
+ADD INDEX idx_recycling_location (Location),
+ADD INDEX idx_recycling_capacity (Capacity),
+ADD CONSTRAINT chk_recycling_capacity CHECK (Capacity > 0);
+
+-- Add indexes to Collection_Schedules table
+ALTER TABLE Collection_Schedules
+ADD INDEX idx_schedule_date (Schedule_Date),
+ADD INDEX idx_schedule_status (Status),
+ADD INDEX idx_schedule_frequency (Frequency);
+
+-- Add indexes to Waste table
+ALTER TABLE Waste
+ADD INDEX idx_waste_category (Category),
+ADD INDEX idx_waste_hazardous (Hazardous),
+ADD CONSTRAINT chk_waste_weight CHECK (Weight > 0 OR Weight IS NULL),
+ADD CONSTRAINT chk_waste_volume CHECK (Volume > 0 OR Volume IS NULL);
+
+-- Add foreign key relationship indexes to HAS_Schedule table
+ALTER TABLE HAS_Schedule
+ADD INDEX idx_has_schedule_area (Area_ID),
+ADD INDEX idx_has_schedule_schedule (Schedule_ID),
+ADD INDEX idx_has_schedule_crew (Crew_ID);
+
 -- ===== INSERT DUMMY DATA (BANGLADESH PERSPECTIVE - ENGLISH) =====
 
 -- Insert Bins from Excel (135 rows)
