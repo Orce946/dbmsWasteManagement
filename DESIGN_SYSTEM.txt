@@ -1,0 +1,570 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║        WASTE MANAGEMENT SYSTEM - VISUAL & DESIGN DOCUMENTATION            ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+
+═════════════════════════════════════════════════════════════════════════════
+                         DESIGN SYSTEM
+═════════════════════════════════════════════════════════════════════════════
+
+COLOR PALETTE:
+╔═══════════════════════════════════════════════════════════════════════════╗
+│ Primary (Green)      │ #10b981  │ ████████████ │ Main actions, success   │
+│ Secondary (Blue)     │ #3b82f6  │ ████████████ │ Secondary actions       │
+│ Accent (Amber)       │ #f59e0b  │ ████████████ │ Highlights, warnings    │
+│ Danger (Red)         │ #ef4444  │ ████████████ │ Delete, errors          │
+│ Success (Green-light)│ #10b981  │ ████████████ │ Success messages        │
+│ Warning (Yellow)     │ #eab308  │ ████████████ │ Warning messages        │
+│ Background (Gray)    │ #f3f4f6  │ ████████████ │ Page background         │
+│ Surface (White)      │ #ffffff  │ ████████████ │ Cards, panels           │
+│ Text (Dark Gray)     │ #1f2937  │ ████████████ │ Primary text            │
+│ Text Light (Gray)    │ #6b7280  │ ████████████ │ Secondary text          │
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+TYPOGRAPHY:
+┌──────────────────────────────────────────────────────────────────────────┐
+│ Font Family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif              │
+│ System Default: -apple-system, BlinkMacSystemFont                         │
+│                                                                            │
+│ Heading 1 (H1):  2.25rem / 36px / font-bold    (Dashboard title)         │
+│ Heading 2 (H2):  1.875rem / 30px / font-bold   (Page titles)             │
+│ Heading 3 (H3):  1.5rem / 24px / font-bold     (Section titles)          │
+│ Body:            1rem / 16px / font-normal     (Main text)               │
+│ Small:           0.875rem / 14px / font-normal (Captions, hints)         │
+│ Tiny:            0.75rem / 12px / font-normal  (Timestamps, meta)        │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+SPACING SYSTEM (8px base):
+┌──────────────────────────────────────────────────────────────────────────┐
+│ xs: 0.25rem (2px)    │ for minimal spacing                              │
+│ sm: 0.5rem (4px)     │ for tight spacing                                │
+│ md: 1rem (8px)       │ for normal spacing (base unit)                   │
+│ lg: 1.5rem (12px)    │ for comfortable spacing                          │
+│ xl: 2rem (16px)      │ for generous spacing                             │
+│ 2xl: 3rem (24px)     │ for large sections                               │
+│ 3xl: 4rem (32px)     │ for major sections                               │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+BORDER RADIUS:
+┌──────────────────────────────────────────────────────────────────────────┐
+│ sm: 0.125rem (2px)   │ for minimal rounding                             │
+│ md: 0.375rem (6px)   │ for subtle rounding                              │
+│ lg: 0.5rem (8px)     │ for normal rounding (cards, buttons)             │
+│ xl: 0.75rem (12px)   │ for generous rounding                            │
+│ full: 9999px         │ for pills/circles                                │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+SHADOW SYSTEM:
+┌──────────────────────────────────────────────────────────────────────────┐
+│ sm: 0 1px 2px rgba(0,0,0,0.05)                   (subtle)               │
+│ md: 0 4px 6px rgba(0,0,0,0.1)                    (normal - cards)       │
+│ lg: 0 10px 15px rgba(0,0,0,0.1)                  (emphasized)           │
+│ xl: 0 20px 25px rgba(0,0,0,0.1)                  (elevated)             │
+│ hover: md → lg transition                        (interactive)          │
+└──────────────────────────────────────────────────────────────────────────┘
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    COMPONENT DESIGN GUIDE
+═════════════════════════════════════════════════════════════════════════════
+
+BUTTON STYLES:
+
+Primary Button:
+┌─────────────────────────────────┐
+│  ✓ Create Area                  │  ← Green background, white text
+└─────────────────────────────────┘
+Background: #10b981
+Hover:      #059669 (darker green)
+Text:       white, bold
+Padding:    12px 16px (py-3 px-4)
+Border:     none
+Radius:     8px (rounded-lg)
+Shadow:     md
+Icon:       left or both sides
+Transition: 150ms ease-in-out
+
+Secondary Button:
+┌─────────────────────────────────┐
+│  ✓ Edit                         │  ← Blue background, white text
+└─────────────────────────────────┘
+Background: #3b82f6
+Hover:      #1d4ed8
+Text:       white, bold
+Padding:    12px 16px
+
+Danger Button:
+┌─────────────────────────────────┐
+│  ✗ Delete                       │  ← Red background, white text
+└─────────────────────────────────┘
+Background: #ef4444
+Hover:      #dc2626
+Text:       white, bold
+Padding:    12px 16px
+
+Outline Button:
+┌─────────────────────────────────┐
+│  ○ Cancel                       │  ← Border only, gray text
+└─────────────────────────────────┘
+Background: transparent
+Border:     2px #d1d5db
+Text:       #4b5563
+Hover:      Border becomes darker
+Padding:    12px 16px
+
+
+CARD COMPONENT:
+
+Standard Card:
+╔═══════════════════════════════════╗
+║  Card Title                       ║  ← White background
+║                                   ║  ← Shadow on hover
+║  Card content goes here...        ║
+║                                   ║
+╚═══════════════════════════════════╝
+
+Background:     #ffffff
+Border:         1px #e5e7eb
+Border Radius:  8px
+Shadow:         0 4px 6px rgba(0,0,0,0.1)
+Hover Shadow:   0 10px 15px rgba(0,0,0,0.1)
+Padding:        24px (p-6)
+Transition:     150ms shadow
+
+Gradient Card (for stats):
+╔═══════════════════════════════════╗
+║  Total Bills                      ║  ← Gradient background
+║                                   ║  ← Icon in corner
+║  523                              ║
+╚═══════════════════════════════════╝
+
+Background: Linear gradient from light color to darker shade
+Example:    bg-gradient-to-br from-blue-50 to-blue-100
+Icon:       Positioned right, large, with opacity
+
+
+BADGE COMPONENT:
+
+Success Badge:
+┌──────────────────┐
+│  ✓ Paid          │  ← Green background
+└──────────────────┘
+Background: #dcfce7 (green-100)
+Text:       #166534 (green-800)
+Padding:    3px 12px
+Radius:     9999px (pill shaped)
+Font-size:  14px
+
+Warning Badge:
+┌──────────────────┐
+│  ⚠ Pending       │  ← Yellow background
+└──────────────────┘
+Background: #fef3c7 (amber-100)
+Text:       #92400e (amber-800)
+
+Danger Badge:
+┌──────────────────┐
+│  ✗ Overdue       │  ← Red background
+└──────────────────┘
+Background: #fee2e2 (red-100)
+Text:       #7f1d1d (red-800)
+
+
+INPUT FIELD:
+
+Text Input:
+┌─────────────────────────────────┐
+│ Enter area name...              │  ← Light gray border
+└─────────────────────────────────┘
+Background:  #ffffff
+Border:      1px #d1d5db
+Focus:       Ring 2px #10b981 (primary color)
+Padding:     10px 16px
+Radius:      8px
+Font:        1rem
+Transition:  border, ring (150ms)
+
+Select Dropdown:
+┌─────────────────────────────────┐
+│ Select a citizen        ▼       │
+└─────────────────────────────────┘
+
+Textarea:
+┌─────────────────────────────────┐
+│ Enter description...            │
+│                                 │
+│                                 │
+└─────────────────────────────────┘
+Rows: 4 (adjust as needed)
+
+
+TABLE DESIGN:
+
+┌──────────────────────────────────────────────────────────────────┐
+│ Bill ID  │ Citizen      │ Amount   │ Status  │ Due Date           │
+├──────────────────────────────────────────────────────────────────┤
+│ 1        │ John Doe     │ $500.00  │ ✓ Paid  │ 2025-12-15  Edit   │
+│ 2        │ Jane Smith   │ $350.00  │ ⚠ Pend  │ 2025-11-20  Delete │
+│ 3        │ Bob Johnson  │ $720.00  │ ✗ Over  │ 2025-10-30         │
+└──────────────────────────────────────────────────────────────────┘
+
+Header Row:
+  Background: #f3f4f6 (gray-100)
+  Text:       #374151 (gray-700), bold
+  Padding:    12px 24px
+  Border-b:   1px #e5e7eb
+
+Data Rows:
+  Background: #ffffff
+  Border-b:   1px #e5e7eb
+  Padding:    16px 24px
+  Hover:      #f9fafb (light gray)
+  Transition: background 150ms
+
+Actions Column:
+  Buttons:    sm size, gap-2 spacing
+  Icons:      16px size
+  On hover:   Show tooltips
+
+
+MODAL/DIALOG:
+
+┌─────────────────────────────────────────────┐
+│ Add New Area                        [×]      │  ← Header with close
+├─────────────────────────────────────────────┤
+│                                             │
+│  Area Name:  [_______________]              │
+│  Desc:       [_______________]              │
+│              [_______________]              │
+│              [_______________]              │
+│                                             │
+│          [Create Area]  [Cancel]            │  ← Footer buttons
+└─────────────────────────────────────────────┘
+
+Background:     #ffffff
+Max Width:      448px (max-w-md)
+Border Radius:  8px
+Box Shadow:     0 20px 25px rgba(0,0,0,0.15)
+Header:         Border-bottom, padding-6
+Content:        Padding-6, space-y-4 for fields
+Footer:         Buttons, gap-2
+
+Overlay:
+Background: rgba(0, 0, 0, 0.5)
+Position:   fixed, full viewport
+Z-index:    50 (modal on top)
+Click:      Closes modal
+
+
+NOTIFICATION/TOAST:
+
+Success Notification:
+┌────────────────────────────────────────┐
+│ ✓ Area created successfully            │  ← Green
+└────────────────────────────────────────┘
+Position:    fixed, top-right
+Background:  #10b981 (green)
+Text:        #ffffff
+Padding:     12px 24px
+Radius:      8px
+Shadow:      lg
+Duration:    3000ms auto-dismiss
+Animation:   Fade in/out 200ms
+
+Error Notification:
+┌────────────────────────────────────────┐
+│ ✗ Error deleting area                  │  ← Red
+└────────────────────────────────────────┘
+Background: #ef4444
+
+Warning Notification:
+Background: #eab308 (yellow)
+
+Info Notification:
+Background: #3b82f6 (blue)
+
+
+═════════════════════════════════════════════════════════════════════════════
+                      LAYOUT & STRUCTURE
+═════════════════════════════════════════════════════════════════════════════
+
+SIDEBAR NAVIGATION:
+
+┌─────────────────────┐
+│ 🗑 WasteHub         │  ← Logo (40px height)
+├─────────────────────┤
+│ 🏠 Dashboard        │  ← Nav items, 16px icon
+│ 📍 Areas            │     Padding: py-3 px-4
+│ 👥 Citizens         │     Hover: bg-green-500
+│ 📄 Bills            │     Active: underline
+│ 💰 Payments         │
+│ 🗑️ Waste            │
+│ 📦 Bins             │
+│ 📊 Reports          │
+├─────────────────────┤
+│                     │  ← Spacer
+└─────────────────────┘
+
+Width:           256px (w-64) desktop
+Background:      Gradient green-600 → green-700
+Text:            #ffffff
+Font-size:       1rem
+Icon size:       20px
+Active item:     bg-green-500
+Collapsed (mobile): Hidden with -translate-x-full transition
+Overlay (mobile):   Click to close
+
+Desktop: Always visible
+Tablet:  Collapsible
+Mobile:  Hidden by default, toggle menu
+
+
+MAIN LAYOUT:
+
+┌──────────────────────────────────────────────────────┐
+│  ☰  Waste Management System              Welcome    │  ← Header
+├──────────────────────────────────────────────────────┤
+│                                                      │
+│  Dashboard                                          │  ← Main content
+│  ───────────────────────────────────────────────    │     Area
+│                                                      │
+│  [Stat Cards] [Charts] [Tables]                    │
+│                                                      │
+├──────────────────────────────────────────────────────┤
+│  © 2025 Waste Management System. All rights reserved│  ← Footer
+└──────────────────────────────────────────────────────┘
+
+Header:
+  Height:      64px
+  Background:  #ffffff
+  Shadow:      md (0 4px 6px rgba(0,0,0,0.1))
+  Padding:     16px (p-4)
+  Items:       Menu toggle, Title, User info
+
+Content:
+  Background:  #f3f4f6 (gray-100)
+  Padding:     24px (p-6)
+  Auto-scroll: flex-1 overflow-auto
+
+Footer:
+  Height:      auto
+  Background:  #1f2937 (gray-800)
+  Text:        #ffffff
+  Padding:     16px (p-4)
+  Text-align:  center
+
+
+DASHBOARD LAYOUT:
+
+Title:
+  "Dashboard" - H1, font-bold, text-gray-800
+
+Stats Row:
+  Grid: grid-cols-1 md:grid-cols-4 (responsive)
+  Gap:  16px (gap-4)
+  Cards: Each with icon, label, value
+
+Charts Section:
+  Grid: grid-cols-1 lg:grid-cols-2
+  Gap:  24px (gap-6)
+  Height: 300px (h-300)
+
+Content Max-width: 100% (full screen)
+Padding: 24px top/bottom, 24px sides
+
+
+RESPONSIVE DESIGN:
+
+Mobile (< 640px):
+  - Single column layout
+  - Sidebar hidden (toggle menu)
+  - Smaller text and padding
+  - Full-width cards
+  - Stack buttons vertically
+
+Tablet (640px - 1024px):
+  - 2 columns for grids
+  - Sidebar with collapse
+  - Medium spacing
+
+Desktop (> 1024px):
+  - Full layout
+  - Sidebar always visible
+  - Multi-column grids
+  - Large spacing
+
+
+═════════════════════════════════════════════════════════════════════════════
+                        INTERACTION DESIGN
+═════════════════════════════════════════════════════════════════════════════
+
+HOVER STATES:
+- Buttons:   Color darken, shadow increase
+- Cards:     Shadow increase (md → lg)
+- Links:     Color darken, underline appear
+- Rows:      Background color change to gray-50
+
+FOCUS STATES:
+- Inputs:    Ring 2px primary color
+- Buttons:   Ring 2px offset 2px primary color
+- Links:     Outline 2px offset 2px
+
+ACTIVE STATES:
+- Nav items: Background color, underline
+- Buttons:   Darker color, no shadow
+- Toggle:    Background filled
+
+LOADING STATES:
+- Buttons:   "Processing..." text, disabled, opacity 0.6
+- Tables:    "Loading..." message, skeleton loading
+- Modals:    Disabled submit button
+
+DISABLED STATES:
+- Buttons:   opacity 0.5, cursor not-allowed
+- Inputs:    bg-gray-100, cursor not-allowed
+- Text:      color-gray-400
+
+
+ANIMATIONS:
+
+Fade In/Out:
+  Duration: 200ms
+  Easing:   ease-in-out
+  Usage:    Notifications, modals
+
+Slide In/Out:
+  Duration: 300ms
+  Easing:   ease-in-out
+  Usage:    Sidebar (mobile)
+
+Scale:
+  Duration: 150ms
+  Easing:   ease-out
+  Usage:    Button press, hover effects
+
+Color Transition:
+  Duration: 150ms
+  Easing:   ease-in-out
+  Usage:    Hover states, badge changes
+
+Smooth Scroll:
+  Behavior: smooth
+  Usage:    Page scrolling
+
+
+═════════════════════════════════════════════════════════════════════════════
+                    CHART & VISUALIZATION DESIGN
+═════════════════════════════════════════════════════════════════════════════
+
+PIE CHART (Bill Status):
+  Colors:
+    Paid:     #10b981 (green)
+    Pending:  #f59e0b (amber)
+    Overdue:  #ef4444 (red)
+  
+  Features:
+    - Center labels with values
+    - Legend below chart
+    - Tooltip on hover
+    - Smooth animation on load
+
+BAR CHART (Payment Methods):
+  X-axis:   Payment methods (Cash, Card, Online, Check)
+  Y-axis:   Count
+  Color:    #10b981 (primary green)
+  Features:
+    - Grid lines for readability
+    - Tooltip with values
+    - Responsive width
+
+LINE CHART (Trends):
+  Multiple series with different colors
+  X-axis:   Time/dates
+  Y-axis:   Amount
+  Features:
+    - Smooth curves
+    - Point markers
+    - Legend for multiple lines
+    - Area fill under line
+
+STAT CARDS:
+  Layout: Icon (large, light color) + Text (label + value)
+  Colors: Gradient backgrounds (light to darker shade)
+  Examples:
+    - Blue: Total Bills
+    - Green: Amount, Success count
+    - Yellow: Warnings, Pending
+    - Red: Errors, Overdue
+
+
+═════════════════════════════════════════════════════════════════════════════
+                        ACCESSIBILITY (A11y)
+═════════════════════════════════════════════════════════════════════════════
+
+✓ Color contrast ratio ≥ 4.5:1 for normal text
+✓ Color contrast ratio ≥ 3:1 for large text
+✓ Alt text for all images and icons
+✓ ARIA labels for interactive elements
+✓ Keyboard navigation support
+✓ Focus indicators visible
+✓ Form labels associated with inputs
+✓ Error messages linked to fields
+✓ Skip to main content link
+✓ Semantic HTML structure
+
+Icons + Text:
+  Always pair icons with text labels
+  Never rely on icon alone for meaning
+
+Color Coding:
+  Don't use color as only indicator
+  Use text labels, patterns, icons as well
+
+
+═════════════════════════════════════════════════════════════════════════════
+                          BEST PRACTICES
+═════════════════════════════════════════════════════════════════════════════
+
+1. CONSISTENCY:
+   - Use the same button style throughout
+   - Consistent spacing and alignment
+   - Standardized icons and colors
+   - Predictable behavior and navigation
+
+2. CLARITY:
+   - Clear labels and descriptions
+   - Obvious call-to-action buttons
+   - Status indicators (badges)
+   - Error messages that help
+
+3. FEEDBACK:
+   - Animations on interactions
+   - Toast notifications for actions
+   - Loading states for async operations
+   - Confirmation dialogs for destructive actions
+
+4. PERFORMANCE:
+   - Fast page load times
+   - Lazy load images and data
+   - Smooth animations (60 fps)
+   - Minimal repaints/reflows
+
+5. RESPONSIVE:
+   - Mobile-first approach
+   - Touch-friendly buttons (48px minimum)
+   - Readable text on all sizes
+   - Flexible layouts
+
+6. USER-CENTERED:
+   - Task-focused design
+   - Minimal cognitive load
+   - Clear error messages
+   - Accessible to all users
+
+═════════════════════════════════════════════════════════════════════════════

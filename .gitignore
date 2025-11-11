@@ -1,0 +1,63 @@
+# Node modules
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+
+# Frontend build
+dist/
+.env.local
+.env.*.local
+
+# PHP
+vendor/
+.env
+.env.local
+.env.php
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+
+# Logs
+logs/
+*.log
+.log
+
+# Temporary files
+*.tmp
+.tmp/
+temp/
+.cache/
+
+# Database
+*.sql~
+*.backup
+
+# Build artifacts
+.build/
+build/
+
+# Runtime
+.env
+.env.local
+.env.*.local
+
+# Misc
+.DS_Store
+._*
+.AppleDouble
+.LSOverride

@@ -1,0 +1,471 @@
+================================================================================
+                    HOW TO RUN THE WASTE MANAGEMENT DATABASE
+================================================================================
+
+OVERVIEW:
+This guide shows you step-by-step how to run the database project and view
+the output.
+
+================================================================================
+                    OPTION 1: USING MySQL CLIENT (RECOMMENDED)
+================================================================================
+
+STEP 1: Open MySQL Command Line
+────────────────────────────────
+Mac/Linux:
+  $ mysql -u root -p
+  (Enter your MySQL password when prompted)
+
+Windows:
+  > mysql -u root -p
+  (Enter your MySQL password when prompted)
+
+Result: You should see the mysql> prompt
+
+
+STEP 2: Run the Database Creation Script
+──────────────────────────────────────────
+At the mysql> prompt, execute:
+
+  mysql> SOURCE /Users/punam/Desktop/varsity/3-1/Lab/dbms/Project/codebase/create_waste_management_db.sql;
+
+Or (if the above doesn't work):
+
+  mysql> \. /Users/punam/Desktop/varsity/3-1/Lab/dbms/Project/codebase/create_waste_management_db.sql;
+
+Expected Output:
+  Query OK, 0 rows affected
+  [Repeats for each table]
+
+This creates:
+  ✅ Database: wasteManagemet
+  ✅ 11 tables
+
+
+STEP 3: Run the Constraints Script
+────────────────────────────────────
+At the mysql> prompt, execute:
+
+  mysql> SOURCE /Users/punam/Desktop/varsity/3-1/Lab/dbms/Project/codebase/alter_add_constraints.sql;
+
+Expected Output:
+  Query OK, 0 rows affected
+  [Repeats for each constraint and index]
+
+This adds:
+  ✅ 7 UNIQUE constraints
+  ✅ 8 CHECK constraints
+  ✅ NOT NULL modifications
+  ✅ 32+ indexes
+
+
+STEP 4: Verify the Database
+─────────────────────────────
+Run these verification queries:
+
+1. Show all tables:
+   mysql> SHOW TABLES IN wasteManagemet;
+
+   Expected Output:
+   +-----------------------+
+   | Tables_in_wastemanagemet |
+   +-----------------------+
+   | Area                  |
+   | Assigned              |
+   | Bill                  |
+   | Bins                  |
+   | Citizen               |
+   | Collection_Schedule   |
+   | Crew                  |
+   | Has_Schedule          |
+   | Payment               |
+   | Recycling_Center      |
+   | Waste                 |
+   +-----------------------+
+   11 rows in set
+
+2. Count constraints:
+   mysql> SELECT CONSTRAINT_TYPE, COUNT(*) as Count
+          FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+          WHERE TABLE_SCHEMA = 'wasteManagemet'
+          GROUP BY CONSTRAINT_TYPE;
+
+   Expected Output:
+   +---------------+-------+
+   | CONSTRAINT_TYPE | Count |
+   +---------------+-------+
+   | CHECK         |     8 |
+   | FOREIGN KEY   |    15 |
+   | PRIMARY KEY   |    11 |
+   | UNIQUE        |     7 |
+   +---------------+-------+
+
+3. Show table structure:
+   mysql> DESCRIBE Area;
+
+   Expected Output:
+   +-------------+----------+------+-----+-------------------+-------------------+
+   | Field       | Type     | Null | Key | Default           | Extra             |
+   +-------------+----------+------+-----+-------------------+-------------------+
+   | area_id     | int      | NO   | PRI | NULL              | auto_increment    |
+   | area_name   | varchar(100) | NO | UNI | NULL             |                   |
+   | description | text     | YES  |     | NULL              |                   |
+   | created_at  | timestamp| YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
+   +-------------+----------+------+-----+-------------------+-------------------+
+
+
+STEP 5: Run Some Sample Queries
+─────────────────────────────────
+Try these queries to verify everything works:
+
+1. Check Citizen table:
+   mysql> SELECT * FROM Citizen;
+
+   Expected Output:
+   Empty set (no data yet - that's expected)
+
+2. Check constraints on Bill table:
+   mysql> DESCRIBE Bill;
+
+   Expected Output:
+   +------------+---------------+------+-----+---------+---+
+   | Field      | Type          | Null | Key | Default |   |
+   +------------+---------------+------+-----+---------+---+
+   | bill_id    | int           | NO   | PRI | NULL    |   |
+   | status     | varchar(50)   | NO   |     | Pending |   |
+   | amount     | decimal(10,2) | NO   |     | NULL    |   |
+   | due_date   | date          | NO   |     | NULL    |   |
+   | citizen_id | int           | NO   | MUL | NULL    |   |
+   | created_at | timestamp     | YES  |     |...      |   |
+   +------------+---------------+------+-----+---------+---+
+
+3. Test a check constraint (this should fail):
+   mysql> INSERT INTO Bill (status, amount, due_date, citizen_id)
+          VALUES ('Invalid', 100, '2025-12-15', 1);
+
+   Expected Output:
+   ERROR 3819 (HY000): Check constraint 'chk_bill_status' is violated.
+
+4. Test inserting valid data:
+   mysql> INSERT INTO Area (area_name, description) VALUES ('Downtown', 'Main city area');
+   mysql> INSERT INTO Citizen (name, address, contact, area_id) 
+          VALUES ('John Doe', '123 Main St', '555-0001', 1);
+
+   Expected Output:
+   Query OK, 1 row affected
+
+5. Verify the data:
+   mysql> SELECT * FROM Citizen;
+
+   Expected Output:
+   +-----------+----------+-------------+---------+---------+---------------------+
+   | citizen_id | name    | address     | contact | area_id | created_at          |
+   +-----------+----------+-------------+---------+---------+---------------------+
+   |         1 | John Doe | 123 Main St | 555-0001|       1 | 2025-11-10 23:15:30 |
+   +-----------+----------+-------------+---------+---------+---------------------+
+
+================================================================================
+                    OPTION 2: USING VS CODE SQL EXTENSION
+================================================================================
+
+STEP 1: Open VS Code Database Explorer
+──────────────────────────────────────
+1. Click on the Database Explorer in VS Code sidebar
+2. Or press Ctrl+Shift+D (or Cmd+Shift+D on Mac)
+3. Click "Connect to Database"
+4. Select MySQL
+5. Configure connection:
+   - Host: localhost
+   - User: root
+   - Password: (your MySQL password)
+   - Port: 3306
+
+STEP 2: Execute SQL Files
+──────────────────────────
+1. Open create_waste_management_db.sql
+2. Right-click and select "Execute SQL"
+3. Open alter_add_constraints.sql
+4. Right-click and select "Execute SQL"
+
+STEP 3: View Database in Explorer
+──────────────────────────────────
+1. Expand "wasteManagemet" in the explorer
+2. You should see all 11 tables listed
+
+STEP 4: Run Queries
+───────────────────
+1. Open a new SQL file or query window
+2. Copy any query from table_relationships_joins.sql
+3. Right-click and select "Execute SQL"
+4. View results in the output panel
+
+================================================================================
+                    OPTION 3: TERMINAL/COMMAND LINE (ALL-IN-ONE)
+================================================================================
+
+Run entire project in one command:
+
+Mac/Linux:
+  $ mysql -u root -p < /Users/punam/Desktop/varsity/3-1/Lab/dbms/Project/codebase/create_waste_management_db.sql && \
+    mysql -u root -p < /Users/punam/Desktop/varsity/3-1/Lab/dbms/Project/codebase/alter_add_constraints.sql
+
+Then verify:
+  $ mysql -u root -p wasteManagemet -e "SHOW TABLES;"
+
+Or execute without prompt:
+  $ mysql -u root -pYOUR_PASSWORD < /path/to/create_waste_management_db.sql
+
+(Replace YOUR_PASSWORD with your actual MySQL password)
+
+Windows (Command Prompt):
+  > mysql -u root -p -e "SOURCE C:\path\to\create_waste_management_db.sql;"
+
+================================================================================
+                    SAMPLE OUTPUTS - WHAT TO EXPECT
+================================================================================
+
+AFTER RUNNING create_waste_management_db.sql:
+────────────────────────────────────────────
+Query OK, 0 rows affected (for USE wasteManagemet)
+Query OK, 0 rows affected (for CREATE TABLE Area)
+Query OK, 0 rows affected (for CREATE TABLE Citizen)
+... (repeats for each of 11 tables)
+Query OK, 0 rows affected (for each INDEX)
+
+Total: ~25-30 Query OK messages
+
+
+AFTER RUNNING alter_add_constraints.sql:
+─────────────────────────────────────────
+Query OK, 0 rows affected (for each UNIQUE constraint)
+Query OK, 0 rows affected (for each CHECK constraint)
+Query OK, 0 rows affected (for each INDEX)
+
+Total: ~40-50 Query OK messages
+
+
+VERIFICATION QUERIES OUTPUTS:
+─────────────────────────────
+
+1. SHOW TABLES:
+   +-----------------------+
+   | Tables_in_wastemanagemet |
+   +-----------------------+
+   | Area                  |
+   | Assigned              |
+   | Bill                  |
+   | Bins                  |
+   | Citizen               |
+   | Collection_Schedule   |
+   | Crew                  |
+   | Has_Schedule          |
+   | Payment               |
+   | Recycling_Center      |
+   | Waste                 |
+   +-----------------------+
+   11 rows in set (0.00 sec)
+
+
+2. COUNT CONSTRAINTS:
+   +---------------+-------+
+   | CONSTRAINT_TYPE | Count |
+   +---------------+-------+
+   | CHECK         |     8 |
+   | FOREIGN KEY   |    15 |
+   | PRIMARY KEY   |    11 |
+   | UNIQUE        |     7 |
+   +---------------+-------+
+   4 rows in set (0.02 sec)
+
+
+3. DESCRIBE Area:
+   +-------------+-----------+------+-----+-------------------+---+
+   | Field       | Type      | Null | Key | Default           |   |
+   +-------------+-----------+------+-----+-------------------+---+
+   | area_id     | int       | NO   | PRI | NULL              |   |
+   | area_name   | varchar(100) | NO | UNI | NULL             |   |
+   | description | text      | YES  |     | NULL              |   |
+   | created_at  | timestamp | YES  |     | CURRENT_TIMESTAMP |   |
+   +-------------+-----------+------+-----+-------------------+---+
+   4 rows in set (0.00 sec)
+
+================================================================================
+                    TESTING WITH SAMPLE DATA
+================================================================================
+
+To test the database with sample data, run these INSERT statements:
+
+-- Insert Areas
+INSERT INTO Area (area_name, description) VALUES 
+('Downtown', 'Main city area'),
+('Uptown', 'Northern residential area');
+
+-- Insert Citizens
+INSERT INTO Citizen (name, address, contact, area_id) VALUES 
+('John Doe', '123 Main St', '555-0001', 1),
+('Jane Smith', '456 Oak Ave', '555-0002', 2);
+
+-- Insert Bins
+INSERT INTO Bins (status, fill_level, area_id) VALUES 
+('Empty', 0, 1),
+('Partially Full', 50, 2);
+
+-- Insert Collection Schedule
+INSERT INTO Collection_Schedule (schedule_date, area_id) VALUES 
+('2025-11-15', 1),
+('2025-11-18', 2);
+
+-- Insert Team
+INSERT INTO Assigned (team_name, area_id) VALUES 
+('Team A', 1),
+('Team B', 2);
+
+-- Insert Crew
+INSERT INTO Crew (crew_name, contact, area_id, schedule_id, team_id) VALUES 
+('Crew 1', '555-1001', 1, 1, 1),
+('Crew 2', '555-1002', 2, 2, 2);
+
+-- Insert Waste
+INSERT INTO Waste (name, category, citizen_id) VALUES 
+('Plastic Bottles', 'Recyclable', 1),
+('Organic Waste', 'Organic', 2);
+
+-- Insert Bill
+INSERT INTO Bill (status, amount, due_date, citizen_id) VALUES 
+('Pending', 500.00, '2025-12-15', 1),
+('Paid', 300.00, '2025-11-30', 2);
+
+-- Insert Payment
+INSERT INTO Payment (amount, method, payment_date, citizen_id, bill_id) VALUES 
+('300.00', 'Bank Transfer', '2025-11-10', 2, 2);
+
+-- Insert Recycling Center
+INSERT INTO Recycling_Center (location, capacity, operating_hours, waste_id) VALUES 
+('East Center', 1000, '8AM-6PM', 1),
+('West Center', 1500, '9AM-5PM', 2);
+
+-- Insert Has_Schedule
+INSERT INTO Has_Schedule (area_id, crew_id, schedule_id) VALUES 
+(1, 1, 1),
+(2, 2, 2);
+
+Expected Output:
+  Query OK, 2 rows affected (for Area insert)
+  Query OK, 2 rows affected (for Citizen insert)
+  ... etc
+
+After inserting, verify with:
+  mysql> SELECT * FROM Citizen;
+  mysql> SELECT * FROM Bill;
+  mysql> SELECT * FROM Crew;
+
+================================================================================
+                    RUN COMPLEX QUERIES
+================================================================================
+
+After inserting sample data, test the relationships:
+
+1. Get all citizens with their area:
+   mysql> SELECT c.name, a.area_name FROM Citizen c
+          JOIN Area a ON c.area_id = a.area_id;
+
+   Expected Output:
+   +------------+--------+
+   | name       | area_name |
+   +------------+--------+
+   | John Doe   | Downtown |
+   | Jane Smith | Uptown |
+   +------------+--------+
+
+2. Get crew assignments with schedules:
+   mysql> SELECT c.crew_name, a.area_name, cs.schedule_date
+          FROM Has_Schedule hs
+          JOIN Crew c ON hs.crew_id = c.crew_id
+          JOIN Area a ON hs.area_id = a.area_id
+          JOIN Collection_Schedule cs ON hs.schedule_id = cs.schedule_id;
+
+   Expected Output:
+   +---------+----------+---------------+
+   | crew_name | area_name | schedule_date |
+   +---------+----------+---------------+
+   | Crew 1  | Downtown | 2025-11-15    |
+   | Crew 2  | Uptown   | 2025-11-18    |
+   +---------+----------+---------------+
+
+3. Get bill payment status:
+   mysql> SELECT b.bill_id, c.name, b.amount, 
+                  SUM(p.amount) as paid,
+                  (b.amount - COALESCE(SUM(p.amount), 0)) as outstanding
+           FROM Bill b
+           JOIN Citizen c ON b.citizen_id = c.citizen_id
+           LEFT JOIN Payment p ON b.bill_id = p.bill_id
+           GROUP BY b.bill_id;
+
+   Expected Output:
+   +---------+------------+---------+-------+-------------+
+   | bill_id | name       | amount  | paid  | outstanding |
+   +---------+------------+---------+-------+-------------+
+   |       1 | John Doe   | 500.00  | NULL  |      500.00 |
+   |       2 | Jane Smith | 300.00  | 300.00|        0.00 |
+   +---------+------------+---------+-------+-------------+
+
+================================================================================
+                    QUICK START CHECKLIST
+================================================================================
+
+☐ Open MySQL client
+☐ Run: SOURCE create_waste_management_db.sql
+☐ Run: SOURCE alter_add_constraints.sql
+☐ Verify: SHOW TABLES IN wasteManagemet;
+☐ Check constraints: SELECT CONSTRAINT_TYPE, COUNT(*) FROM ...
+☐ Insert sample data (optional)
+☐ Run test queries
+☐ Check output for accuracy
+
+================================================================================
+                    COMMON ISSUES & SOLUTIONS
+================================================================================
+
+ISSUE: "Access denied for user 'root'@'localhost'"
+SOLUTION: Use correct password or reset MySQL password
+
+ISSUE: "Unknown database 'wasteManagemet'"
+SOLUTION: First run create_waste_management_db.sql to create database
+
+ISSUE: "Duplicate key name"
+SOLUTION: Constraints already exist, skip that ALTER statement
+
+ISSUE: "No tables found" in explorer
+SOLUTION: Refresh the database explorer or reconnect
+
+ISSUE: Queries return empty results
+SOLUTION: Insert sample data first using the INSERT statements above
+
+ISSUE: "Syntax error"
+SOLUTION: Check file paths and MySQL version compatibility
+
+================================================================================
+                    NEXT STEPS
+================================================================================
+
+After verifying the database:
+
+1. Review the query examples in table_relationships_joins.sql
+2. Practice writing your own queries
+3. Test the constraint validations:
+   - Try inserting invalid status values
+   - Try inserting negative amounts
+   - Try inserting duplicate area names
+4. Explore complex joins and relationships
+5. Create views for common queries
+6. Set up data entry procedures
+
+================================================================================
+
+That's it! You now have a fully functional waste management database.
+
+Start with: STEP 1 (Open MySQL Client)
+
+Questions? Check FILE_GUIDE.txt or QUICK_REFERENCE.txt for more info.
+
+================================================================================
