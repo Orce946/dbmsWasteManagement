@@ -21,7 +21,12 @@ switch ($method) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $center->create($data['center_name'] ?? '', $data['location'] ?? '', $data['contact'] ?? '');
+        $result = $center->create(
+            $data['location'] ?? '',
+            $data['capacity'] ?? '',
+            $data['operating_hours'] ?? '',
+            $data['waste_id'] ?? null
+        );
         http_response_code($result['success'] ? 201 : 400);
         echo json_encode($result);
         break;
@@ -33,7 +38,13 @@ switch ($method) {
             break;
         }
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $center->update($id, $data['center_name'] ?? '', $data['location'] ?? '', $data['contact'] ?? '');
+        $result = $center->update(
+            $id,
+            $data['location'] ?? '',
+            $data['capacity'] ?? '',
+            $data['operating_hours'] ?? '',
+            $data['waste_id'] ?? null
+        );
         http_response_code($result['success'] ? 200 : 400);
         echo json_encode($result);
         break;

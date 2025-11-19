@@ -24,17 +24,18 @@ class RecyclingCenter {
     }
 
     // Create recycling center
-    public function create($center_name, $location, $contact) {
-        if (empty($center_name) || empty($location)) {
-            return ['success' => false, 'error' => 'Center name and location are required'];
+    public function create($location, $capacity, $operating_hours, $waste_id = null) {
+        if (empty($location) || empty($capacity)) {
+            return ['success' => false, 'error' => 'Location and capacity are required'];
         }
 
-        $center_name = $this->conn->real_escape_string($center_name);
         $location = $this->conn->real_escape_string($location);
-        $contact = $this->conn->real_escape_string($contact);
+        $capacity = intval($capacity);
+        $operating_hours = $this->conn->real_escape_string($operating_hours);
+        $waste_id = !empty($waste_id) ? intval($waste_id) : 'NULL';
 
-        $query = "INSERT INTO " . $this->table . " (center_name, location, contact) 
-                  VALUES ('" . $center_name . "', '" . $location . "', '" . $contact . "')";
+        $query = "INSERT INTO " . $this->table . " (location, capacity, operating_hours, waste_id) 
+                  VALUES ('" . $location . "', " . $capacity . ", '" . $operating_hours . "', " . $waste_id . ")";
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Recycling center created successfully', 'id' => $this->conn->insert_id];
@@ -44,17 +45,18 @@ class RecyclingCenter {
     }
 
     // Update recycling center
-    public function update($id, $center_name, $location, $contact) {
-        if (empty($center_name) || empty($location)) {
-            return ['success' => false, 'error' => 'Center name and location are required'];
+    public function update($id, $location, $capacity, $operating_hours, $waste_id = null) {
+        if (empty($location) || empty($capacity)) {
+            return ['success' => false, 'error' => 'Location and capacity are required'];
         }
 
         $id = intval($id);
-        $center_name = $this->conn->real_escape_string($center_name);
         $location = $this->conn->real_escape_string($location);
-        $contact = $this->conn->real_escape_string($contact);
+        $capacity = intval($capacity);
+        $operating_hours = $this->conn->real_escape_string($operating_hours);
+        $waste_id = !empty($waste_id) ? intval($waste_id) : 'NULL';
 
-        $query = "UPDATE " . $this->table . " SET center_name = '" . $center_name . "', location = '" . $location . "', contact = '" . $contact . "' WHERE center_id = " . $id;
+        $query = "UPDATE " . $this->table . " SET location = '" . $location . "', capacity = " . $capacity . ", operating_hours = '" . $operating_hours . "', waste_id = " . $waste_id . " WHERE center_id = " . $id;
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Recycling center updated successfully'];

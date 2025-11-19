@@ -13,6 +13,9 @@ const Payments = React.lazy(() => import('./pages/Payments').then(m => ({ defaul
 const Citizens = React.lazy(() => import('./pages/Citizens').then(m => ({ default: m.Citizens })));
 const Waste = React.lazy(() => import('./pages/Waste').then(m => ({ default: m.Waste })));
 const Bins = React.lazy(() => import('./pages/Bins').then(m => ({ default: m.Bins })));
+const Crew = React.lazy(() => import('./pages/Crew').then(m => ({ default: m.Crew })));
+const CollectionSchedules = React.lazy(() => import('./pages/CollectionSchedules').then(m => ({ default: m.CollectionSchedules })));
+const RecyclingCenters = React.lazy(() => import('./pages/RecyclingCenters').then(m => ({ default: m.RecyclingCenters })));
 
 // Loading component
 const PageLoader = () => (
@@ -38,6 +41,9 @@ function App() {
               <Route path="/citizens" element={<Citizens />} />
               <Route path="/waste" element={<Waste />} />
               <Route path="/bins" element={<Bins />} />
+              <Route path="/crew" element={<Crew />} />
+              <Route path="/schedules" element={<CollectionSchedules />} />
+              <Route path="/centers" element={<RecyclingCenters />} />
             </Routes>
           </Suspense>
           <Notification />

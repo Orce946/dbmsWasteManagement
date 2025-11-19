@@ -50,9 +50,32 @@ class Crew {
     }
 
     // Create crew member
-    public function create($crew_name, $contact, $area_id, $schedule_id, $team_id) {
-        if (empty($crew_name) || empty($area_id) || empty($schedule_id) || empty($team_id)) {
-            return ['success' => false, 'error' => 'Required fields are missing'];
+    public function create($crew_name, $contact, $area_id, $schedule_id = null, $team_id = null) {
+        if (empty($crew_name) || empty($area_id)) {
+            return ['success' => false, 'error' => 'Crew name and area are required'];
+        }
+
+        // If schedule_id or team_id are not provided, get defaults or use 1
+        if (empty($schedule_id)) {
+            // Try to get a default schedule for the area, otherwise use 1
+            $scheduleQuery = "SELECT schedule_id FROM Collection_Schedule WHERE area_id = " . intval($area_id) . " LIMIT 1";
+            $scheduleResult = $this->conn->query($scheduleQuery);
+            if ($scheduleResult && $row = $scheduleResult->fetch_assoc()) {
+                $schedule_id = $row['schedule_id'];
+            } else {
+                $schedule_id = 1; // Default to first schedule
+            }
+        }
+        
+        if (empty($team_id)) {
+            // Try to get a default team for the area, otherwise use 1
+            $teamQuery = "SELECT team_id FROM Assigned WHERE area_id = " . intval($area_id) . " LIMIT 1";
+            $teamResult = $this->conn->query($teamQuery);
+            if ($teamResult && $row = $teamResult->fetch_assoc()) {
+                $team_id = $row['team_id'];
+            } else {
+                $team_id = 1; // Default to first team
+            }
         }
 
         $crew_name = $this->conn->real_escape_string($crew_name);

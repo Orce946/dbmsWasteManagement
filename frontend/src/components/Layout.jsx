@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Home, MapPin, Users, FileText, DollarSign, Trash2, Package, BarChart3 } from 'lucide-react';
+import { Menu, X, Home, MapPin, Users, FileText, DollarSign, Trash2, Package, BarChart3, Briefcase, Calendar, Recycle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export const Layout = ({ children }) => {
@@ -9,11 +9,13 @@ export const Layout = ({ children }) => {
     { icon: Home, label: 'Dashboard', href: '/' },
     { icon: MapPin, label: 'Areas', href: '/areas' },
     { icon: Users, label: 'Citizens', href: '/citizens' },
+    { icon: Briefcase, label: 'Crew', href: '/crew' },
     { icon: FileText, label: 'Bills', href: '/bills' },
     { icon: DollarSign, label: 'Payments', href: '/payments' },
     { icon: Trash2, label: 'Waste', href: '/waste' },
     { icon: Package, label: 'Bins', href: '/bins' },
-    { icon: BarChart3, label: 'Reports', href: '/reports' },
+    { icon: Calendar, label: 'Schedules', href: '/schedules' },
+    { icon: Recycle, label: 'Recycling Centers', href: '/centers' },
   ];
 
   return (
