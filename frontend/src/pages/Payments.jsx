@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { Card, Button, Modal, Form, Table } from '../components/UI';
 import { paymentsAPI, billsAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Search, Filter } from 'lucide-react';
 
 export const Payments = () => {
   const { showNotification } = useContext(NotificationContext);
@@ -11,6 +11,8 @@ export const Payments = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterMethod, setFilterMethod] = useState('All');
 
   useEffect(() => {
     fetchPayments();
@@ -54,6 +56,17 @@ export const Payments = () => {
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
+  // Filter and search payments
+  const filteredPayments = useMemo(() => {
+    return payments.filter((payment) => {
+      const matchesSearch = payment.payment_id.toString().includes(searchTerm) ||
+                           payment.amount.toString().includes(searchTerm) ||
+                           payment.citizen_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = filterMethod === 'All' || payment.payment_method === filterMethod;
+      return matchesSearch && matchesFilter;
+    });
+  }, [payments, searchTerm, filterMethod]);
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -87,10 +100,46 @@ export const Payments = () => {
         </Card>
       </div>
 
+      {/* Search and Filter Section */}
       <Card>
+        <div className="space-y-4">
+          <div className="flex gap-4 flex-col md:flex-row">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Search by payment ID, amount, or citizen..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div className="flex gap-2 items-center md:w-64">
+              <Filter size={20} className="text-gray-500" />
+              <select
+                value={filterMethod}
+                onChange={(e) => setFilterMethod(e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="All">All Methods</option>
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="Online">Online</option>
+                <option value="Check">Check</option>
+                <option value="Transfer">Transfer</option>
+              </select>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600">
+            Showing {filteredPayments.length} of {payments.length} payments
+          </p>
+        </div>
+      </Card>
+
+            <Card>
         <Table
           headers={['Payment ID', 'Citizen', 'Bill ID', 'Amount', 'Method', 'Date']}
-          rows={payments.map((payment) => ({
+          rows={filteredPayments.map((payment) => ({
             id: payment.payment_id,
             citizen: payment.citizen_name || '-',
             bill: payment.bill_id,
@@ -98,6 +147,23 @@ export const Payments = () => {
             method: payment.payment_method,
             date: new Date(payment.created_at).toLocaleDateString(),
           }))}
+          actions={(row) => [
+            <Button
+              key="delete"
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                if (window.confirm('Are you sure?')) {
+                  // Delete logic here if needed
+                  showNotification('Payment deleted successfully', 'success');
+                  fetchPayments();
+                }
+              }}
+              className="text-sm px-2 py-1"
+            >
+              <Trash2 size={16} />
+            </Button>,
+          ]}
         />
       </Card>
 

@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { Card, Button, Modal, Form, Table, Badge } from '../components/UI';
 import { billsAPI, citizensAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
 
 export const Bills = () => {
   const { showNotification } = useContext(NotificationContext);
@@ -12,6 +12,8 @@ export const Bills = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
 
   useEffect(() => {
     fetchBills();
@@ -79,6 +81,23 @@ export const Bills = () => {
     return <Badge variant={variants[status] || 'primary'}>{status}</Badge>;
   };
 
+  const getCitizenName = (citizenId) => {
+    const citizen = citizens.find((c) => c.citizen_id == citizenId);
+    return citizen ? citizen.name : '-';
+  };
+
+  // Filter and search bills
+  const filteredBills = useMemo(() => {
+    return bills.filter((bill) => {
+      const citizenName = getCitizenName(bill.citizen_id).toLowerCase();
+      const matchesSearch = citizenName.includes(searchTerm.toLowerCase()) ||
+                           bill.bill_id.toString().includes(searchTerm) ||
+                           bill.amount.toString().includes(searchTerm);
+      const matchesFilter = filterStatus === 'All' || bill.status === filterStatus;
+      return matchesSearch && matchesFilter;
+    });
+  }, [bills, searchTerm, filterStatus, citizens]);
+
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
   return (
@@ -98,12 +117,46 @@ export const Bills = () => {
         </Button>
       </div>
 
+      {/* Search and Filter Section */}
+      <Card>
+        <div className="space-y-4">
+          <div className="flex gap-4 flex-col md:flex-row">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+              <input
+                type="text"
+                placeholder="Search by citizen name or bill ID..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div className="flex gap-2 items-center md:w-64">
+              <Filter size={20} className="text-gray-500" />
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="All">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Paid">Paid</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+            </div>
+          </div>
+          <p className="text-sm text-gray-600">
+            Showing {filteredBills.length} of {bills.length} bills
+          </p>
+        </div>
+      </Card>
+
       <Card>
         <Table
           headers={['Bill ID', 'Citizen', 'Amount', 'Status', 'Due Date']}
-          rows={bills.map((bill) => ({
+          rows={filteredBills.map((bill) => ({
             id: bill.bill_id,
-            citizen: bill.citizen_name || '-',
+            citizen: getCitizenName(bill.citizen_id),
             amount: `$${bill.amount}`,
             status: getStatusBadge(bill.status),
             due: new Date(bill.due_date).toLocaleDateString(),
@@ -113,7 +166,10 @@ export const Bills = () => {
               key="edit"
               variant="secondary"
               size="sm"
-              onClick={() => setEditingId(row.id) || setIsModalOpen(true)}
+              onClick={() => {
+                setEditingId(row.id);
+                setIsModalOpen(true);
+              }}
               className="text-sm px-2 py-1"
             >
               <Edit size={16} />
