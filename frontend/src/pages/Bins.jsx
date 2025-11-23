@@ -244,6 +244,23 @@ export const Bins = () => {
               required: true,
             },
             {
+              name: 'location',
+              label: 'Location',
+              type: 'text',
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.location || '' : '',
+              required: false,
+              placeholder: 'e.g., Main Street, Park entrance',
+            },
+            {
+              name: 'capacity',
+              label: 'Capacity (Liters)',
+              type: 'number',
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.capacity || 100 : 100,
+              required: false,
+              step: '1',
+              min: '10',
+            },
+            {
               name: 'status',
               label: 'Status',
               type: 'select',

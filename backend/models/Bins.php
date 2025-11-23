@@ -46,7 +46,7 @@ class Bins {
     }
 
     // Create bin
-    public function create($status, $area_id, $fill_level = 0, $sensor = null) {
+    public function create($status, $area_id, $fill_level = 0, $sensor = null, $location = null, $capacity = null) {
         if (empty($status) || empty($area_id)) {
             return ['success' => false, 'error' => 'Required fields are missing'];
         }
@@ -55,10 +55,11 @@ class Bins {
         $area_id = intval($area_id);
         $fill_level = floatval($fill_level);
         $sensor = $sensor ? $this->conn->real_escape_string($sensor) : null;
+        $location = $location ? $this->conn->real_escape_string($location) : null;
+        $capacity = $capacity ? intval($capacity) : 100;
 
-        $sensor_part = $sensor ? ", sensor = '" . $sensor . "'" : '';
-        $query = "INSERT INTO " . $this->table . " (status, area_id, fill_level" . ($sensor ? ", sensor" : "") . ") 
-                  VALUES ('" . $status . "', " . $area_id . ", " . $fill_level . "" . ($sensor ? ", '" . $sensor . "'" : "") . ")";
+        $query = "INSERT INTO " . $this->table . " (status, area_id, fill_level, sensor, location, capacity) 
+                  VALUES ('" . $status . "', " . $area_id . ", " . $fill_level . ", " . ($sensor ? "'" . $sensor . "'" : "NULL") . ", " . ($location ? "'" . $location . "'" : "NULL") . ", " . $capacity . ")";
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Bin created successfully', 'id' => $this->conn->insert_id];
@@ -68,7 +69,7 @@ class Bins {
     }
 
     // Update bin
-    public function update($id, $status, $area_id, $fill_level = null, $sensor = null) {
+    public function update($id, $status, $area_id, $fill_level = null, $sensor = null, $location = null, $capacity = null) {
         $id = intval($id);
         $status = $this->conn->real_escape_string($status);
         $area_id = intval($area_id);
@@ -83,6 +84,16 @@ class Bins {
         if ($sensor !== null) {
             $sensor = $this->conn->real_escape_string($sensor);
             $query .= ", sensor = '" . $sensor . "'";
+        }
+        
+        if ($location !== null) {
+            $location = $this->conn->real_escape_string($location);
+            $query .= ", location = '" . $location . "'";
+        }
+        
+        if ($capacity !== null) {
+            $capacity = intval($capacity);
+            $query .= ", capacity = " . $capacity;
         }
         
         $query .= " WHERE bin_id = " . $id;

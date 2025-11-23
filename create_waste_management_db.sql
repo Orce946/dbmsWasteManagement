@@ -27,6 +27,8 @@ CREATE TABLE IF NOT EXISTS Bins (
     status VARCHAR(50) NOT NULL,
     fill_level INT DEFAULT 0,
     sensor VARCHAR(100),
+    location VARCHAR(255),
+    capacity INT DEFAULT 100,
     area_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (area_id) REFERENCES Area(area_id)
