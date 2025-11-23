@@ -240,10 +240,24 @@ export const Bins = () => {
               label: 'Area',
               type: 'select',
               options: areas.map((a) => ({ value: a.area_id, label: a.area_name })),
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.area_id || '' : '',
               required: true,
             },
-            { name: 'location', label: 'Location', type: 'text', required: true },
-            { name: 'capacity', label: 'Capacity (Liters)', type: 'number', required: true, step: '1' },
+            {
+              name: 'location',
+              label: 'Location',
+              type: 'text',
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.location || '' : '',
+              required: true,
+            },
+            {
+              name: 'capacity',
+              label: 'Capacity (Liters)',
+              type: 'number',
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.capacity || '' : '',
+              required: true,
+              step: '1',
+            },
             {
               name: 'bin_type',
               label: 'Bin Type',
@@ -254,6 +268,7 @@ export const Bins = () => {
                 { value: 'Hazardous', label: '⚠️ Hazardous' },
                 { value: 'General', label: '🗑️ General Waste' },
               ],
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.bin_type || '' : '',
               required: true,
             },
             {
@@ -265,6 +280,7 @@ export const Bins = () => {
                 { value: 'Inactive', label: 'Inactive' },
                 { value: 'Maintenance', label: 'Maintenance' },
               ],
+              value: editingId ? bins.find((b) => b.bin_id === editingId)?.status || '' : '',
               required: true,
             },
           ]}
