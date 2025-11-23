@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TrendingUp, Users, Trash2, DollarSign } from 'lucide-react';
 import { Card } from '../components/UI';
 import { billsAPI, wasteAPI, citizensAPI, binsAPI, crewAPI } from '../services/api';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, DonutChart } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export const Dashboard = () => {
   const [stats, setStats] = useState({
