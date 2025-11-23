@@ -46,21 +46,49 @@ class Bins {
     }
 
     // Create bin
-    public function create($bin_type, $capacity, $fill_level, $area_id) {
-        if (empty($bin_type) || empty($capacity) || empty($area_id)) {
+    public function create($status, $area_id, $fill_level = 0, $sensor = null) {
+        if (empty($status) || empty($area_id)) {
             return ['success' => false, 'error' => 'Required fields are missing'];
         }
 
-        $bin_type = $this->conn->real_escape_string($bin_type);
-        $capacity = floatval($capacity);
-        $fill_level = floatval($fill_level);
+        $status = $this->conn->real_escape_string($status);
         $area_id = intval($area_id);
+        $fill_level = floatval($fill_level);
+        $sensor = $sensor ? $this->conn->real_escape_string($sensor) : null;
 
-        $query = "INSERT INTO " . $this->table . " (bin_type, capacity, fill_level, area_id) 
-                  VALUES ('" . $bin_type . "', " . $capacity . ", " . $fill_level . ", " . $area_id . ")";
+        $sensor_part = $sensor ? ", sensor = '" . $sensor . "'" : '';
+        $query = "INSERT INTO " . $this->table . " (status, area_id, fill_level" . ($sensor ? ", sensor" : "") . ") 
+                  VALUES ('" . $status . "', " . $area_id . ", " . $fill_level . "" . ($sensor ? ", '" . $sensor . "'" : "") . ")";
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Bin created successfully', 'id' => $this->conn->insert_id];
+        }
+        
+        return ['success' => false, 'error' => $this->conn->error];
+    }
+
+    // Update bin
+    public function update($id, $status, $area_id, $fill_level = null, $sensor = null) {
+        $id = intval($id);
+        $status = $this->conn->real_escape_string($status);
+        $area_id = intval($area_id);
+
+        $query = "UPDATE " . $this->table . " SET status = '" . $status . "', area_id = " . $area_id;
+        
+        if ($fill_level !== null) {
+            $fill_level = floatval($fill_level);
+            $query .= ", fill_level = " . $fill_level;
+        }
+        
+        if ($sensor !== null) {
+            $sensor = $this->conn->real_escape_string($sensor);
+            $query .= ", sensor = '" . $sensor . "'";
+        }
+        
+        $query .= " WHERE bin_id = " . $id;
+        
+        if ($this->conn->query($query)) {
+            return ['success' => true, 'message' => 'Bin updated successfully'];
         }
         
         return ['success' => false, 'error' => $this->conn->error];

@@ -31,7 +31,7 @@ switch ($method) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $bins->create($data['bin_type'] ?? '', $data['capacity'] ?? '', $data['fill_level'] ?? '', $data['area_id'] ?? '');
+        $result = $bins->create($data['status'] ?? 'Active', $data['area_id'] ?? '', $data['fill_level'] ?? 0, $data['sensor'] ?? null);
         http_response_code($result['success'] ? 201 : 400);
         echo json_encode($result);
         break;
@@ -43,7 +43,15 @@ switch ($method) {
             break;
         }
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $bins->updateFillLevel($id, $data['fill_level'] ?? '');
+        
+        // Check if it's a full update (status, area_id) or just fill_level
+        if (isset($data['status'])) {
+            // Full update
+            $result = $bins->update($id, $data['status'] ?? 'Active', $data['area_id'] ?? '', $data['fill_level'] ?? null, $data['sensor'] ?? null);
+        } else {
+            // Just fill level update
+            $result = $bins->updateFillLevel($id, $data['fill_level'] ?? '');
+        }
         http_response_code($result['success'] ? 200 : 400);
         echo json_encode($result);
         break;
