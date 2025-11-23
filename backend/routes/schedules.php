@@ -33,6 +33,18 @@ switch ($method) {
         echo json_encode($result);
         break;
 
+    case 'PUT':
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'ID is required']);
+            break;
+        }
+        $data = json_decode(file_get_contents("php://input"), true);
+        $result = $schedule->update($id, $data['schedule_date'] ?? '', $data['area_id'] ?? '');
+        http_response_code($result['success'] ? 200 : 400);
+        echo json_encode($result);
+        break;
+
     case 'DELETE':
         if (!$id) {
             http_response_code(400);

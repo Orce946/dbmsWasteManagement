@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Card, Button, Modal, Form, Table } from '../components/UI';
 import { schedulesAPI, areasAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2 } from 'lucide-react';
 
 export const CollectionSchedules = () => {
   const { showNotification } = useContext(NotificationContext);
@@ -11,6 +11,7 @@ export const CollectionSchedules = () => {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -34,15 +35,26 @@ export const CollectionSchedules = () => {
   const handleSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
-      await schedulesAPI.create(formData);
-      showNotification('Schedule created successfully', 'success');
+      if (editingId) {
+        await schedulesAPI.update(editingId, formData);
+        showNotification('Schedule updated successfully', 'success');
+      } else {
+        await schedulesAPI.create(formData);
+        showNotification('Schedule created successfully', 'success');
+      }
       setIsModalOpen(false);
+      setEditingId(null);
       fetchData();
     } catch (error) {
-      showNotification(error.response?.data?.error || 'Error creating schedule', 'error');
+      showNotification(error.response?.data?.error || 'Error saving schedule', 'error');
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleEdit = (schedule) => {
+    setEditingId(schedule.schedule_id);
+    setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
@@ -70,7 +82,10 @@ export const CollectionSchedules = () => {
         <h1 className="text-3xl font-bold text-gray-800">Collection Schedules</h1>
         <Button
           variant="primary"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => {
+            setEditingId(null);
+            setIsModalOpen(true);
+          }}
           className="flex items-center gap-2"
         >
           <Plus size={20} />
@@ -87,24 +102,39 @@ export const CollectionSchedules = () => {
             date: new Date(schedule.schedule_date).toLocaleDateString(),
             created: new Date(schedule.created_at).toLocaleDateString(),
           }))}
-          actions={(row) => [
-            <Button
-              key="delete"
-              variant="danger"
-              size="sm"
-              onClick={() => handleDelete(row.id)}
-              className="text-sm px-2 py-1"
-            >
-              <Trash2 size={16} />
-            </Button>,
-          ]}
+          actions={(row) => {
+            const schedule = schedules.find((s) => s.schedule_id === row.id);
+            return [
+              <Button
+                key="edit"
+                variant="secondary"
+                size="sm"
+                onClick={() => handleEdit(schedule)}
+                className="text-sm px-2 py-1"
+              >
+                <Edit size={16} />
+              </Button>,
+              <Button
+                key="delete"
+                variant="danger"
+                size="sm"
+                onClick={() => handleDelete(row.id)}
+                className="text-sm px-2 py-1"
+              >
+                <Trash2 size={16} />
+              </Button>,
+            ];
+          }}
         />
       </Card>
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Create New Schedule"
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingId(null);
+        }}
+        title={editingId ? 'Edit Schedule' : 'Create New Schedule'}
       >
         <Form
           onSubmit={handleSubmit}
@@ -118,16 +148,18 @@ export const CollectionSchedules = () => {
                 value: area.area_id,
                 label: area.area_name,
               })),
+              value: editingId ? schedules.find((s) => s.schedule_id === editingId)?.area_id || '' : '',
               required: true,
             },
             {
               name: 'schedule_date',
               label: 'Schedule Date',
               type: 'date',
+              value: editingId ? schedules.find((s) => s.schedule_id === editingId)?.schedule_date || '' : '',
               required: true,
             },
           ]}
-          submitLabel="Create Schedule"
+          submitLabel={editingId ? 'Update Schedule' : 'Create Schedule'}
         />
       </Modal>
     </div>

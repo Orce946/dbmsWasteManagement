@@ -81,6 +81,7 @@ export const schedulesAPI = {
   getAll: () => api.get('/schedules'),
   getByArea: (areaId) => api.get(`/schedules?area_id=${areaId}`),
   create: (data) => api.post('/schedules', data),
+  update: (id, data) => api.put(`/schedules/${id}`, data),
   delete: (id) => api.delete(`/schedules/${id}`),
 };
 

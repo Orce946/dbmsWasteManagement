@@ -64,6 +64,25 @@ class CollectionSchedule {
         return ['success' => false, 'error' => $this->conn->error];
     }
 
+    // Update schedule
+    public function update($id, $schedule_date, $area_id) {
+        if (empty($schedule_date) || empty($area_id)) {
+            return ['success' => false, 'error' => 'Schedule date and area are required'];
+        }
+
+        $id = intval($id);
+        $schedule_date = $this->conn->real_escape_string($schedule_date);
+        $area_id = intval($area_id);
+
+        $query = "UPDATE " . $this->table . " SET schedule_date = '" . $schedule_date . "', area_id = " . $area_id . " WHERE schedule_id = " . $id;
+        
+        if ($this->conn->query($query)) {
+            return ['success' => true, 'message' => 'Schedule updated successfully'];
+        }
+        
+        return ['success' => false, 'error' => $this->conn->error];
+    }
+
     // Delete schedule
     public function delete($id) {
         $id = intval($id);
