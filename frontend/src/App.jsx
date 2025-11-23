@@ -9,7 +9,6 @@ import './index.css';
 // Lazy load pages for better performance
 const Areas = React.lazy(() => import('./pages/Areas').then(m => ({ default: m.Areas })));
 const Bills = React.lazy(() => import('./pages/Bills').then(m => ({ default: m.Bills })));
-const Payments = React.lazy(() => import('./pages/Payments').then(m => ({ default: m.Payments })));
 const Citizens = React.lazy(() => import('./pages/Citizens').then(m => ({ default: m.Citizens })));
 const Waste = React.lazy(() => import('./pages/Waste').then(m => ({ default: m.Waste })));
 const Bins = React.lazy(() => import('./pages/Bins').then(m => ({ default: m.Bins })));
@@ -37,7 +36,6 @@ function App() {
               <Route path="/" element={<Dashboard />} />
               <Route path="/areas" element={<Areas />} />
               <Route path="/bills" element={<Bills />} />
-              <Route path="/payments" element={<Payments />} />
               <Route path="/citizens" element={<Citizens />} />
               <Route path="/waste" element={<Waste />} />
               <Route path="/bins" element={<Bins />} />
