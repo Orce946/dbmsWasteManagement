@@ -707,17 +707,7 @@ php -S localhost:8001
 
 ---
 
-## 📚 Additional Documentation
 
-- **SQL_JOINS_DOCUMENTATION.md** - Comprehensive JOIN operations guide
-- **SQL_JOINS_QUICK_REFERENCE.md** - 15 most useful queries
-- **SQL_TERMINAL_COMMAND_REFERENCE.md** - 40+ terminal commands
-- **SQL_JOIN_QUERIES_TERMINAL.sql** - 50+ executable queries
-- **SQL_JOINS_INDEX.md** - Master index of all documentation
-- **TERNARY_RELATIONSHIPS_DETAILED.sql** - Ternary relationship examples
-- **relationship_documentation.sql** - All relationships explained
-
----
 
 ## 📊 Project Statistics
 
