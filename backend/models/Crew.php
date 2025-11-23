@@ -95,7 +95,7 @@ class Crew {
     }
 
     // Update crew member
-    public function update($id, $crew_name, $contact) {
+    public function update($id, $crew_name, $contact, $area_id = null) {
         if (empty($crew_name)) {
             return ['success' => false, 'error' => 'Crew name is required'];
         }
@@ -103,8 +103,15 @@ class Crew {
         $id = intval($id);
         $crew_name = $this->conn->real_escape_string($crew_name);
         $contact = $this->conn->real_escape_string($contact);
+        
+        $updateFields = "crew_name = '" . $crew_name . "', contact = '" . $contact . "'";
+        
+        if ($area_id !== null) {
+            $area_id = intval($area_id);
+            $updateFields .= ", area_id = " . $area_id;
+        }
 
-        $query = "UPDATE " . $this->table . " SET crew_name = '" . $crew_name . "', contact = '" . $contact . "' WHERE crew_id = " . $id;
+        $query = "UPDATE " . $this->table . " SET " . $updateFields . " WHERE crew_id = " . $id;
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Crew member updated successfully'];

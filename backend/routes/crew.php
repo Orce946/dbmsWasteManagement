@@ -40,7 +40,7 @@ switch ($method) {
             break;
         }
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $crew->update($id, $data['crew_name'] ?? '', $data['contact'] ?? '');
+        $result = $crew->update($id, $data['crew_name'] ?? '', $data['contact'] ?? '', $data['area_id'] ?? null);
         http_response_code($result['success'] ? 200 : 400);
         echo json_encode($result);
         break;
