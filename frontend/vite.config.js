@@ -15,6 +15,15 @@ export default defineConfig({
       }
     },
     middlewareMode: false,
+    watch: {
+      usePolling: true,
+      interval: 100,
+    },
+    hmr: {
+      host: 'localhost',
+      port: 3000,
+      protocol: 'ws',
+    },
   },
   build: {
     minify: 'terser',
