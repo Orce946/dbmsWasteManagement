@@ -146,7 +146,7 @@ export const Payments = () => {
             bill: payment.bill_id,
             amount: `$${payment.amount}`,
             method: payment.payment_method,
-            date: new Date(payment.created_at).toLocaleDateString(),
+            date: payment.created_at ? new Date(payment.created_at).toLocaleDateString() : '-',
           }))}
           actions={(row) => [
             <Button
