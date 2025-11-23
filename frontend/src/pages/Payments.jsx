@@ -180,6 +180,7 @@ export const Payments = () => {
               name: 'bill_id',
               label: 'Bill',
               type: 'select',
+              options: bills.map((b) => ({ value: b.bill_id, label: `Bill #${b.bill_id} - ${b.citizen_name || 'Unknown'} ($${b.amount})` })),
               required: true,
             },
             {
@@ -193,6 +194,12 @@ export const Payments = () => {
               name: 'payment_method',
               label: 'Payment Method',
               type: 'select',
+              options: [
+                { value: 'Cash', label: 'Cash' },
+                { value: 'Card', label: 'Card' },
+                { value: 'Bank Transfer', label: 'Bank Transfer' },
+                { value: 'Cheque', label: 'Cheque' },
+              ],
               required: true,
             },
           ]}

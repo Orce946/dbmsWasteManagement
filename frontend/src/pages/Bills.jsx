@@ -204,26 +204,41 @@ export const Bills = () => {
               name: 'citizen_id',
               label: 'Citizen',
               type: 'select',
+              options: citizens.map((c) => ({ value: c.citizen_id, label: c.name })),
               required: true,
-            },
-            {
-              name: 'status',
-              label: 'Status',
-              type: 'select',
-              required: true,
-              value: editingId ? bills.find((b) => b.bill_id === editingId)?.status || '' : '',
+              value: editingId
+                ? bills.find((b) => b.bill_id === editingId)?.citizen_id || ''
+                : '',
             },
             {
               name: 'amount',
               label: 'Amount',
               type: 'number',
               required: true,
+              value: editingId
+                ? bills.find((b) => b.bill_id === editingId)?.amount || ''
+                : '',
             },
             {
               name: 'due_date',
               label: 'Due Date',
               type: 'date',
               required: true,
+              value: editingId
+                ? bills.find((b) => b.bill_id === editingId)?.due_date || ''
+                : '',
+            },
+            {
+              name: 'status',
+              label: 'Status',
+              type: 'select',
+              options: [
+                { value: 'Pending', label: 'Pending' },
+                { value: 'Paid', label: 'Paid' },
+                { value: 'Overdue', label: 'Overdue' },
+              ],
+              required: true,
+              value: editingId ? bills.find((b) => b.bill_id === editingId)?.status || '' : '',
             },
           ]}
           submitLabel={editingId ? 'Update Bill' : 'Create Bill'}
