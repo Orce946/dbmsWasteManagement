@@ -48,13 +48,22 @@ export const Areas = () => {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('Are you sure?')) {
+    console.log('Delete button clicked for area:', id);
+    if (window.confirm('Are you sure you want to delete this area?')) {
       try {
-        await areasAPI.delete(id);
-        showNotification('Area deleted successfully', 'success');
-        fetchAreas();
+        console.log('Sending DELETE request for area:', id);
+        const response = await areasAPI.delete(id);
+        console.log('Delete response:', response);
+        if (response.data.success) {
+          showNotification(response.data.message || 'Area deleted successfully', 'success');
+          await fetchAreas();
+        } else {
+          showNotification(response.data.error || 'Error deleting area', 'error');
+        }
       } catch (error) {
-        showNotification(error.response?.data?.error || 'Error deleting area', 'error');
+        const errorMsg = error.response?.data?.error || error.message || 'Error deleting area';
+        console.error('Delete error:', error);
+        showNotification(errorMsg, 'error');
       }
     }
   };
@@ -99,6 +108,7 @@ export const Areas = () => {
               size="sm"
               onClick={() => handleEdit(areas.find((a) => a.area_id == row.id))}
               className="text-sm px-2 py-1"
+              title="Edit area"
             >
               <Edit size={16} />
             </Button>,
@@ -108,6 +118,7 @@ export const Areas = () => {
               size="sm"
               onClick={() => handleDelete(row.id)}
               className="text-sm px-2 py-1"
+              title="Delete area"
             >
               <Trash2 size={16} />
             </Button>,
