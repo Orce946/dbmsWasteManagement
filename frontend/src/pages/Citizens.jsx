@@ -156,6 +156,7 @@ export const Citizens = () => {
         title={editingId ? 'Edit Citizen' : 'Add New Citizen'}
       >
         <Form
+          key={editingId || 'new'}
           fields={[
             { name: 'name', label: 'Full Name', type: 'text', required: true },
             { name: 'phone', label: 'Phone Number', type: 'tel', required: false },

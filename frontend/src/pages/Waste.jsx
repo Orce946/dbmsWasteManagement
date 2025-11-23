@@ -177,6 +177,7 @@ export const Waste = () => {
         title={editingId ? 'Edit Waste Record' : 'Record New Waste'}
       >
         <Form
+          key={editingId || 'new'}
           fields={[
             {
               name: 'waste_type',

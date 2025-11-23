@@ -125,6 +125,7 @@ export const RecyclingCenters = () => {
         title={editingId ? 'Edit Recycling Center' : 'Add New Recycling Center'}
       >
         <Form
+          key={editingId || 'new'}
           onSubmit={handleSubmit}
           isLoading={isSubmitting}
           fields={[

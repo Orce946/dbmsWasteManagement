@@ -124,6 +124,7 @@ export const Areas = () => {
         title={editingId ? 'Edit Area' : 'Add New Area'}
       >
         <Form
+          key={editingId || 'new'}
           onSubmit={handleSubmit}
           isLoading={isSubmitting}
           fields={[

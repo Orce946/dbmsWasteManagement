@@ -135,6 +135,7 @@ export const Crew = () => {
         title={editingId ? 'Edit Crew Member' : 'Add New Crew Member'}
       >
         <Form
+          key={editingId || 'new'}
           onSubmit={handleSubmit}
           isLoading={isSubmitting}
           fields={[

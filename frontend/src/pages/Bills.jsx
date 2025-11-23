@@ -196,6 +196,7 @@ export const Bills = () => {
         title={editingId ? 'Edit Bill' : 'Add New Bill'}
       >
         <Form
+          key={editingId || 'new'}
           onSubmit={handleSubmit}
           isLoading={isSubmitting}
           fields={[

@@ -233,6 +233,7 @@ export const Bins = () => {
         title={editingId ? 'Edit Bin' : 'Add New Bin'}
       >
         <Form
+          key={editingId || 'new'}
           fields={[
             {
               name: 'area_id',
