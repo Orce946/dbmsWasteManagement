@@ -24,7 +24,8 @@ export const Payments = () => {
       const response = await paymentsAPI.getAll();
       setPayments(response.data.data || []);
     } catch (error) {
-      showNotification('Error fetching payments', 'error');
+      console.error('Error fetching payments:', error);
+      setPayments([]);
     } finally {
       setLoading(false);
     }
@@ -36,8 +37,6 @@ export const Payments = () => {
       setBills(response.data.data || []);
     } catch (error) {
       console.error('Error fetching bills:', error);
-      showNotification('Error fetching bills', 'error');
-      setBills([]);
     }
   };
 
@@ -87,17 +86,17 @@ export const Payments = () => {
         <Card className="bg-gradient-to-br from-green-50 to-green-100">
           <p className="text-gray-600 text-sm">Total Payments</p>
           <p className="text-3xl font-bold text-green-600">
-            ${payments.reduce((sum, p) => sum + parseFloat(p.amount), 0).toFixed(2)}
+            ${(payments || []).reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0).toFixed(2)}
           </p>
         </Card>
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100">
           <p className="text-gray-600 text-sm">Total Transactions</p>
-          <p className="text-3xl font-bold text-blue-600">{payments.length}</p>
+          <p className="text-3xl font-bold text-blue-600">{(payments || []).length}</p>
         </Card>
         <Card className="bg-gradient-to-br from-purple-50 to-purple-100">
           <p className="text-gray-600 text-sm">Average Payment</p>
           <p className="text-3xl font-bold text-purple-600">
-            ${payments.length > 0 ? (payments.reduce((sum, p) => sum + parseFloat(p.amount), 0) / payments.length).toFixed(2) : '0'}
+            ${(payments || []).length > 0 ? ((payments || []).reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0) / (payments || []).length).toFixed(2) : '0'}
           </p>
         </Card>
       </div>
@@ -138,7 +137,7 @@ export const Payments = () => {
         </div>
       </Card>
 
-            <Card>
+      <Card>
         <Table
           headers={['Payment ID', 'Citizen', 'Bill ID', 'Amount', 'Method', 'Date']}
           rows={filteredPayments.map((payment) => ({
@@ -155,11 +154,8 @@ export const Payments = () => {
               variant="danger"
               size="sm"
               onClick={() => {
-                if (window.confirm('Are you sure?')) {
-                  // Delete logic here if needed
-                  showNotification('Payment deleted successfully', 'success');
-                  fetchPayments();
-                }
+                // Delete functionality will be added in future
+                showNotification('Delete functionality coming soon', 'info');
               }}
               className="text-sm px-2 py-1"
             >
