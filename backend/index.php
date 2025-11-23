@@ -7,13 +7,12 @@ $request_method = $_SERVER['REQUEST_METHOD'];
 
 // Remove base path - handle both /codebase/backend/ and direct paths
 $base_path1 = '/codebase/backend/';
-$base_path2 = '/';
 $request_path = $request_uri;
 
 if (strpos($request_uri, $base_path1) === 0) {
     $request_path = str_replace($base_path1, '', $request_uri);
 } else {
-    $request_path = str_replace($base_path2, '', $request_uri);
+    $request_path = ltrim($request_uri, '/');
 }
 
 $request_parts = array_filter(explode('/', $request_path));
