@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Card, Button, Modal, Form, Table, Badge } from '../components/UI';
-import { wasteAPI, areasAPI } from '../services/api';
+import { wasteAPI, areasAPI, citizensAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
 import { Plus, Edit, Trash2, Trash, Recycle } from 'lucide-react';
 
@@ -8,13 +8,14 @@ export const Waste = () => {
   const { showNotification } = useContext(NotificationContext);
   const [wastes, setWastes] = useState([]);
   const [areas, setAreas] = useState([]);
+  const [citizens, setCitizens] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    Promise.all([fetchWastes(), fetchAreas()]).finally(() => setLoading(false));
+    Promise.all([fetchWastes(), fetchAreas(), fetchCitizens()]).finally(() => setLoading(false));
   }, []);
 
   const fetchWastes = async () => {
@@ -32,6 +33,15 @@ export const Waste = () => {
       setAreas(response.data.data || []);
     } catch (error) {
       console.error('Error fetching areas:', error);
+    }
+  };
+
+  const fetchCitizens = async () => {
+    try {
+      const response = await citizensAPI.getAll();
+      setCitizens(response.data.data || []);
+    } catch (error) {
+      console.error('Error fetching citizens:', error);
     }
   };
 
@@ -189,6 +199,15 @@ export const Waste = () => {
                 { value: 'Hazardous', label: '⚠️ Hazardous' },
                 { value: 'General', label: '🗑️ General' },
               ],
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.waste_type || '' : '',
+              required: true,
+            },
+            {
+              name: 'citizen_id',
+              label: 'Citizen',
+              type: 'select',
+              options: citizens.map((c) => ({ value: c.citizen_id, label: c.name })),
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.citizen_id || '' : '',
               required: true,
             },
             {
@@ -196,10 +215,24 @@ export const Waste = () => {
               label: 'Area',
               type: 'select',
               options: areas.map((a) => ({ value: a.area_id, label: a.area_name })),
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.area_id || '' : '',
               required: true,
             },
-            { name: 'quantity', label: 'Quantity (kg)', type: 'number', required: true, step: '0.01' },
-            { name: 'collection_date', label: 'Collection Date', type: 'date', required: true },
+            {
+              name: 'quantity',
+              label: 'Quantity (kg)',
+              type: 'number',
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.quantity || '' : '',
+              required: true,
+              step: '0.01',
+            },
+            {
+              name: 'collection_date',
+              label: 'Collection Date',
+              type: 'date',
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.collection_date || '' : '',
+              required: true,
+            },
             {
               name: 'status',
               label: 'Status',
@@ -209,6 +242,7 @@ export const Waste = () => {
                 { value: 'Collected', label: 'Collected' },
                 { value: 'Processed', label: 'Processed' },
               ],
+              value: editingId ? wastes.find((w) => w.waste_id === editingId)?.status || 'Pending' : 'Pending',
               required: true,
             },
           ]}

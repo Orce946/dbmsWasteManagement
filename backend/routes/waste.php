@@ -35,8 +35,31 @@ switch ($method) {
 
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $waste->create($data['category'] ?? '', $data['quantity'] ?? '', $data['citizen_id'] ?? '', $data['area_id'] ?? '');
+        $result = $waste->create($data['waste_type'] ?? '', $data['quantity'] ?? '', $data['citizen_id'] ?? '', $data['area_id'] ?? '', $data['collection_date'] ?? null, $data['status'] ?? 'Pending');
         http_response_code($result['success'] ? 201 : 400);
+        echo json_encode($result);
+        break;
+
+    case 'PUT':
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'ID is required']);
+            break;
+        }
+        $data = json_decode(file_get_contents("php://input"), true);
+        $result = $waste->update($id, $data['waste_type'] ?? '', $data['quantity'] ?? '', $data['citizen_id'] ?? '', $data['area_id'] ?? '', $data['collection_date'] ?? null, $data['status'] ?? 'Pending');
+        http_response_code($result['success'] ? 200 : 400);
+        echo json_encode($result);
+        break;
+
+    case 'DELETE':
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'ID is required']);
+            break;
+        }
+        $result = $waste->delete($id);
+        http_response_code($result['success'] ? 200 : 400);
         echo json_encode($result);
         break;
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { Card, Button, Modal, Form, Table } from '../components/UI';
 import { crewAPI, areasAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
-import { Plus, Edit, Trash2 } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, MapPin, BarChart3 } from 'lucide-react';
 
 export const Crew = () => {
   const { showNotification } = useContext(NotificationContext);
@@ -76,6 +76,15 @@ export const Crew = () => {
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
+  const totalCrew = crew.length;
+  const crewByArea = crew.reduce((acc, member) => {
+    const areaName = getAreaName(member.area_id);
+    acc[areaName] = (acc[areaName] || 0) + 1;
+    return acc;
+  }, {});
+  const largestArea = Object.keys(crewByArea).length > 0 ? Object.entries(crewByArea).reduce((a, b) => (a[1] > b[1] ? a : b))[0] : 'N/A';
+  const crewInLargestArea = crewByArea[largestArea] || 0;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -91,6 +100,35 @@ export const Crew = () => {
           <Plus size={20} />
           Add Crew Member
         </Button>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm">Total Crew Members</p>
+              <p className="text-3xl font-bold text-blue-600">{totalCrew}</p>
+            </div>
+            <Users className="text-blue-400" size={40} />
+          </div>
+        </Card>
+        <Card className="bg-gradient-to-br from-green-50 to-green-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm">Active Areas</p>
+              <p className="text-3xl font-bold text-green-600">{Object.keys(crewByArea).length}</p>
+            </div>
+            <MapPin className="text-green-400" size={40} />
+          </div>
+        </Card>
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100">
+          <div>
+            <p className="text-gray-600 text-sm">Largest Team</p>
+            <p className="text-2xl font-bold text-purple-600">{largestArea}</p>
+            <p className="text-sm text-gray-500 mt-1">{crewInLargestArea} members</p>
+          </div>
+        </Card>
       </div>
 
       <Card>

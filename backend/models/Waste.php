@@ -48,21 +48,58 @@ class Waste {
     }
 
     // Create waste record
-    public function create($category, $quantity, $citizen_id, $area_id) {
-        if (empty($category) || empty($quantity) || empty($citizen_id) || empty($area_id)) {
+    public function create($waste_type, $quantity, $citizen_id, $area_id, $collection_date = null, $status = 'Pending') {
+        if (empty($waste_type) || empty($quantity) || empty($citizen_id) || empty($area_id)) {
             return ['success' => false, 'error' => 'All fields are required'];
         }
 
-        $category = $this->conn->real_escape_string($category);
+        $waste_type = $this->conn->real_escape_string($waste_type);
         $quantity = floatval($quantity);
         $citizen_id = intval($citizen_id);
         $area_id = intval($area_id);
+        $status = $this->conn->real_escape_string($status);
+        $collection_date = $collection_date ? $this->conn->real_escape_string($collection_date) : date('Y-m-d');
 
-        $query = "INSERT INTO " . $this->table . " (category, quantity, citizen_id, area_id) 
-                  VALUES ('" . $category . "', " . $quantity . ", " . $citizen_id . ", " . $area_id . ")";
+        $query = "INSERT INTO " . $this->table . " (waste_type, quantity, citizen_id, area_id, collection_date, status, category, name) 
+                  VALUES ('" . $waste_type . "', " . $quantity . ", " . $citizen_id . ", " . $area_id . ", '" . $collection_date . "', '" . $status . "', '" . $waste_type . "', 'Waste Record')";
         
         if ($this->conn->query($query)) {
             return ['success' => true, 'message' => 'Waste record created successfully', 'id' => $this->conn->insert_id];
+        }
+        
+        return ['success' => false, 'error' => $this->conn->error];
+    }
+
+    // Update waste record
+    public function update($id, $waste_type, $quantity, $citizen_id, $area_id, $collection_date = null, $status = 'Pending') {
+        if (empty($waste_type) || empty($quantity) || empty($citizen_id) || empty($area_id)) {
+            return ['success' => false, 'error' => 'All fields are required'];
+        }
+
+        $id = intval($id);
+        $waste_type = $this->conn->real_escape_string($waste_type);
+        $quantity = floatval($quantity);
+        $citizen_id = intval($citizen_id);
+        $area_id = intval($area_id);
+        $status = $this->conn->real_escape_string($status);
+        $collection_date = $collection_date ? $this->conn->real_escape_string($collection_date) : date('Y-m-d');
+
+        $query = "UPDATE " . $this->table . " SET waste_type = '" . $waste_type . "', quantity = " . $quantity . ", citizen_id = " . $citizen_id . ", area_id = " . $area_id . ", collection_date = '" . $collection_date . "', status = '" . $status . "', category = '" . $waste_type . "' WHERE waste_id = " . $id;
+        
+        if ($this->conn->query($query)) {
+            return ['success' => true, 'message' => 'Waste record updated successfully'];
+        }
+        
+        return ['success' => false, 'error' => $this->conn->error];
+    }
+
+    // Delete waste record
+    public function delete($id) {
+        $id = intval($id);
+        $query = "DELETE FROM " . $this->table . " WHERE waste_id = " . $id;
+        
+        if ($this->conn->query($query)) {
+            return ['success' => true, 'message' => 'Waste record deleted successfully'];
         }
         
         return ['success' => false, 'error' => $this->conn->error];

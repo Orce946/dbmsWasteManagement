@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext, useMemo } from 'react';
 import { Card, Button, Modal, Form, Table, Badge } from '../components/UI';
 import { billsAPI, citizensAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
-import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Filter, DollarSign, FileText, TrendingUp } from 'lucide-react';
 
 export const Bills = () => {
   const { showNotification } = useContext(NotificationContext);
@@ -100,6 +100,14 @@ export const Bills = () => {
 
   if (loading) return <div className="text-center py-8">Loading...</div>;
 
+  // Calculate summary statistics
+  const totalBills = bills.length;
+  const totalAmount = bills.reduce((sum, bill) => sum + (parseFloat(bill.amount) || 0), 0);
+  const paidBills = bills.filter((b) => b.status === 'Paid').length;
+  const pendingBills = bills.filter((b) => b.status === 'Pending').length;
+  const overdueBills = bills.filter((b) => b.status === 'Overdue').length;
+  const collectionRate = totalBills > 0 ? ((paidBills / totalBills) * 100).toFixed(1) : 0;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -115,6 +123,40 @@ export const Bills = () => {
           <Plus size={20} />
           Add Bill
         </Button>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="bg-gradient-to-br from-blue-50 to-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm">Total Bills</p>
+              <p className="text-3xl font-bold text-blue-600">{totalBills}</p>
+            </div>
+            <FileText className="text-blue-400" size={40} />
+          </div>
+        </Card>
+        <Card className="bg-gradient-to-br from-green-50 to-green-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-gray-600 text-sm">Total Amount</p>
+              <p className="text-3xl font-bold text-green-600">${totalAmount.toFixed(2)}</p>
+            </div>
+            <DollarSign className="text-green-400" size={40} />
+          </div>
+        </Card>
+        <Card className="bg-gradient-to-br from-purple-50 to-purple-100">
+          <div>
+            <p className="text-gray-600 text-sm">Collection Status</p>
+            <div className="mt-2 space-y-1">
+              <div className="flex justify-between items-center">
+                <span className="text-sm">Paid: {paidBills}</span>
+                <span className="text-lg font-bold text-green-600">{collectionRate}%</span>
+              </div>
+              <div className="text-sm text-gray-600">Pending: {pendingBills} | Overdue: {overdueBills}</div>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Search and Filter Section */}
