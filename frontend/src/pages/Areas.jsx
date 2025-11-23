@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Card, Button, Modal, Form, Table } from '../components/UI';
+import { Card, Modal, Form } from '../components/UI';
 import { areasAPI } from '../services/api';
 import { NotificationContext } from '../context/NotificationContext';
 import { Plus, Edit, Trash2 } from 'lucide-react';
@@ -49,32 +49,24 @@ export const Areas = () => {
   };
 
   const handleDelete = async (areaId) => {
-    const areaIdNum = parseInt(areaId, 10);
-    console.log('🗑️ Delete initiated for area ID:', areaIdNum, 'Type:', typeof areaIdNum);
-    
-    if (!window.confirm('Are you sure you want to delete this area?')) {
-      console.log('❌ Delete cancelled by user');
-      return;
-    }
+    const confirmDelete = window.confirm('Are you sure you want to delete this area? This action cannot be undone.');
+    if (!confirmDelete) return;
 
     setDeleting(true);
     try {
-      console.log('📤 Sending DELETE request to /areas/' + areaIdNum);
-      const response = await areasAPI.delete(areaIdNum);
-      console.log('📥 Delete response:', response.data);
+      console.log('Deleting area:', areaId);
+      const response = await areasAPI.delete(areaId);
+      console.log('Delete response:', response);
       
-      if (response.data.success) {
-        showNotification(response.data.message || 'Area deleted successfully', 'success');
-        console.log('✅ Area deleted successfully');
-        await fetchAreas();
+      if (response.data && response.data.success) {
+        showNotification('Area deleted successfully!', 'success');
+        fetchAreas();
       } else {
-        showNotification(response.data.error || 'Error deleting area', 'error');
-        console.error('❌ Delete failed:', response.data.error);
+        showNotification(response.data?.error || 'Failed to delete area', 'error');
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.error || error.message || 'Error deleting area';
-      console.error('❌ Delete error:', error);
-      showNotification(errorMsg, 'error');
+      console.error('Delete error:', error);
+      showNotification(error.response?.data?.error || error.message || 'Error deleting area', 'error');
     } finally {
       setDeleting(false);
     }
@@ -91,17 +83,17 @@ export const Areas = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold text-gray-800">Areas</h1>
-        <Button
-          variant="primary"
+        <button
+          type="button"
           onClick={() => {
             setEditingId(null);
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2"
         >
           <Plus size={20} />
           Add Area
-        </Button>
+        </button>
       </div>
 
       <Card>
@@ -120,33 +112,33 @@ export const Areas = () => {
                 </tr>
               </thead>
               <tbody>
-                {areas.map((area, index) => (
+                {areas.map((area) => (
                   <tr key={area.area_id} className="border-b border-gray-200 hover:bg-gray-50">
                     <td className="px-6 py-4">{area.area_id}</td>
                     <td className="px-6 py-4 font-medium">{area.area_name}</td>
                     <td className="px-6 py-4">{area.description || '-'}</td>
                     <td className="px-6 py-4">{new Date(area.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-4 flex gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
+                      <button
+                        type="button"
                         onClick={() => handleEdit(area)}
-                        className="text-sm px-2 py-1"
-                        title="Edit area"
                         disabled={deleting}
+                        className="bg-blue-600 hover:bg-blue-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed px-3 py-2 rounded text-sm flex items-center gap-1"
+                        title="Edit this area"
                       >
-                        <Edit size={16} />
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="sm"
+                        <Edit size={14} />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => handleDelete(area.area_id)}
-                        className="text-sm px-2 py-1"
-                        title="Delete area"
                         disabled={deleting}
+                        className="bg-red-600 hover:bg-red-700 text-white disabled:bg-gray-400 disabled:cursor-not-allowed px-3 py-2 rounded text-sm flex items-center gap-1"
+                        title="Delete this area"
                       >
-                        <Trash2 size={16} />
-                      </Button>
+                        <Trash2 size={14} />
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}
