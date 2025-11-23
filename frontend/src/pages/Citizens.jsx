@@ -117,14 +117,13 @@ export const Citizens = () => {
 
       <Card>
         <Table
-          headers={['Citizen ID', 'Name', 'Contact', 'Email', 'Area', 'Status']}
+          headers={['Citizen ID', 'Name', 'Address', 'Contact', 'Area']}
           rows={citizens.map((citizen) => ({
             id: citizen.citizen_id,
             name: citizen.name,
-            contact: citizen.phone || '-',
-            email: citizen.email || '-',
+            address: citizen.address || '-',
+            contact: citizen.contact || '-',
             area: getAreaName(citizen.area_id),
-            status: citizen.status || 'Active',
           }))}
           actions={(row) => [
             <Button
@@ -158,25 +157,42 @@ export const Citizens = () => {
         <Form
           key={editingId || 'new'}
           fields={[
-            { name: 'name', label: 'Full Name', type: 'text', required: true },
-            { name: 'phone', label: 'Phone Number', type: 'tel', required: false },
-            { name: 'email', label: 'Email', type: 'email', required: false },
+            {
+              name: 'name',
+              label: 'Full Name',
+              type: 'text',
+              required: true,
+              value: editingId
+                ? citizens.find((c) => c.citizen_id === editingId)?.name || ''
+                : '',
+            },
+            {
+              name: 'address',
+              label: 'Address',
+              type: 'text',
+              required: true,
+              value: editingId
+                ? citizens.find((c) => c.citizen_id === editingId)?.address || ''
+                : '',
+            },
+            {
+              name: 'contact',
+              label: 'Contact Number',
+              type: 'tel',
+              required: false,
+              value: editingId
+                ? citizens.find((c) => c.citizen_id === editingId)?.contact || ''
+                : '',
+            },
             {
               name: 'area_id',
               label: 'Area',
               type: 'select',
               options: areas.map((a) => ({ value: a.area_id, label: a.area_name })),
               required: true,
-            },
-            {
-              name: 'status',
-              label: 'Status',
-              type: 'select',
-              options: [
-                { value: 'Active', label: 'Active' },
-                { value: 'Inactive', label: 'Inactive' },
-              ],
-              required: true,
+              value: editingId
+                ? citizens.find((c) => c.citizen_id === editingId)?.area_id || ''
+                : '',
             },
           ]}
           onSubmit={handleSubmit}
