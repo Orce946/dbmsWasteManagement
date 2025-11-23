@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TrendingUp, Users, Trash2, DollarSign } from 'lucide-react';
 import { Card } from '../components/UI';
 import { billsAPI, wasteAPI, citizensAPI, binsAPI, crewAPI } from '../services/api';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, DonutChart } from 'recharts';
 
 export const Dashboard = () => {
   const [stats, setStats] = useState({
@@ -74,8 +74,8 @@ export const Dashboard = () => {
     return acc;
   }, []);
 
-  // Waste by status chart data
-  const wasteByStatusData = stats.waste.reduce((acc, waste) => {
+  // Waste by status chart data with fallback
+  let wasteByStatusData = stats.waste.reduce((acc, waste) => {
     const existing = acc.find((w) => w.status === waste.status);
     if (existing) {
       existing.count += 1;
@@ -85,9 +85,19 @@ export const Dashboard = () => {
     }
     return acc;
   }, []);
+  
+  // Add default statuses if no data exists
+  if (wasteByStatusData.length === 0) {
+    wasteByStatusData = [
+      { status: 'Collected', count: 0, quantity: 0 },
+      { status: 'Recycled', count: 0, quantity: 0 },
+      { status: 'Disposed', count: 0, quantity: 0 },
+      { status: 'Pending', count: 0, quantity: 0 },
+    ];
+  }
 
-  // Bills by status chart data
-  const billsByStatusData = stats.bills.reduce((acc, bill) => {
+  // Bills by status chart data with fallback
+  let billsByStatusData = stats.bills.reduce((acc, bill) => {
     const existing = acc.find((b) => b.status === bill.status);
     if (existing) {
       existing.count += 1;
@@ -97,6 +107,50 @@ export const Dashboard = () => {
     }
     return acc;
   }, []);
+  
+  // Add default statuses if no data exists
+  if (billsByStatusData.length === 0) {
+    billsByStatusData = [
+      { status: 'Paid', count: 0, amount: 0 },
+      { status: 'Pending', count: 0, amount: 0 },
+      { status: 'Overdue', count: 0, amount: 0 },
+    ];
+  }
+
+  // Enhanced color palette for better visibility
+  const WASTE_STATUS_COLORS = {
+    'Collected': '#3b82f6',
+    'Recycled': '#10b981',
+    'Disposed': '#8b5cf6',
+    'Pending': '#f59e0b',
+  };
+
+  const BILL_STATUS_COLORS = {
+    'Paid': '#10b981',
+    'Pending': '#f59e0b',
+    'Overdue': '#ef4444',
+  };
+
+  // Custom label rendering for charts
+  const renderCustomLabel = ({ status, count, cx, cy, midAngle, innerRadius, outerRadius }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor={x > cx ? 'start' : 'end'}
+        dominantBaseline="central"
+        className="font-bold text-sm"
+      >
+        {count}
+      </text>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -112,52 +166,88 @@ export const Dashboard = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Waste Status Distribution */}
-        <Card>
-          <h3 className="text-lg font-bold mb-4">Waste Status Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
+        {/* Waste Status Distribution - Enhanced Donut Chart */}
+        <Card className="bg-gradient-to-br from-blue-50 to-indigo-50">
+          <h3 className="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
+            <Trash2 size={24} className="text-blue-600" />
+            Waste Status Distribution
+          </h3>
+          <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
                 data={wasteByStatusData}
                 cx="50%"
                 cy="50%"
-                labelLine={false}
-                label={({ status, count }) => `${status}: ${count}`}
-                outerRadius={100}
-                fill="#8884d8"
+                innerRadius={80}
+                outerRadius={130}
+                paddingAngle={2}
                 dataKey="count"
+                label={({ status, count, percent }) => `${status}: ${count} (${(percent * 100).toFixed(0)}%)`}
+                labelLine={true}
               >
-                {COLORS.map((color, index) => (
-                  <Cell key={`cell-${index}`} fill={color} />
+                {wasteByStatusData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={WASTE_STATUS_COLORS[entry.status] || COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                formatter={(value) => [`${value} records`, 'Count']}
+                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+              />
             </PieChart>
           </ResponsiveContainer>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {wasteByStatusData.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-sm">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: WASTE_STATUS_COLORS[item.status] || COLORS[idx % COLORS.length] }}
+                />
+                <span className="text-gray-700">{item.status}: {item.count}</span>
+              </div>
+            ))}
+          </div>
         </Card>
 
-        {/* Bill Status Distribution */}
-        <Card>
-          <h3 className="text-lg font-bold mb-4">Bill Status Distribution</h3>
-          <ResponsiveContainer width="100%" height={300}>
+        {/* Bill Status Distribution - Enhanced Donut Chart */}
+        <Card className="bg-gradient-to-br from-green-50 to-emerald-50">
+          <h3 className="text-lg font-bold mb-4 text-gray-800 flex items-center gap-2">
+            <DollarSign size={24} className="text-green-600" />
+            Bill Status Distribution
+          </h3>
+          <ResponsiveContainer width="100%" height={350}>
             <PieChart>
               <Pie
                 data={billsByStatusData}
                 cx="50%"
                 cy="50%"
-                labelLine={false}
-                label={({ status, count }) => `${status}: ${count}`}
-                outerRadius={100}
-                fill="#8884d8"
+                innerRadius={80}
+                outerRadius={130}
+                paddingAngle={2}
                 dataKey="count"
+                label={({ status, count, percent }) => `${status}: ${count} (${(percent * 100).toFixed(0)}%)`}
+                labelLine={true}
               >
-                {COLORS.map((color, index) => (
-                  <Cell key={`cell-${index}`} fill={color} />
+                {billsByStatusData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={BILL_STATUS_COLORS[entry.status] || COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip
+                formatter={(value) => [`${value} bills`, 'Count']}
+                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+              />
             </PieChart>
           </ResponsiveContainer>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {billsByStatusData.map((item, idx) => (
+              <div key={idx} className="flex items-center gap-2 text-sm">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: BILL_STATUS_COLORS[item.status] || COLORS[idx % COLORS.length] }}
+                />
+                <span className="text-gray-700">{item.status}: {item.count}</span>
+              </div>
+            ))}
+          </div>
         </Card>
       </div>
 
