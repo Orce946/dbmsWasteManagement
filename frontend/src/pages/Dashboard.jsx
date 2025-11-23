@@ -191,7 +191,7 @@ export const Dashboard = () => {
               </Pie>
               <Tooltip
                 formatter={(value) => [`${value} records`, 'Count']}
-                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '2px solid #3b82f6', borderRadius: '8px', color: '#1f2937', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -233,7 +233,7 @@ export const Dashboard = () => {
               </Pie>
               <Tooltip
                 formatter={(value) => [`${value} bills`, 'Count']}
-                contentStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.8)', border: 'none', borderRadius: '8px', color: '#fff' }}
+                contentStyle={{ backgroundColor: 'rgba(255, 255, 255, 0.95)', border: '2px solid #10b981', borderRadius: '8px', color: '#1f2937', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)' }}
               />
             </PieChart>
           </ResponsiveContainer>
