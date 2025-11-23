@@ -180,8 +180,8 @@ export const Citizens = () => {
             },
           ]}
           onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          submitText={editingId ? 'Update' : 'Add'}
+          isLoading={isSubmitting}
+          submitLabel={editingId ? 'Update' : 'Add'}
         />
       </Modal>
     </div>

@@ -213,8 +213,8 @@ export const Waste = () => {
             },
           ]}
           onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          submitText={editingId ? 'Update' : 'Record'}
+          isLoading={isSubmitting}
+          submitLabel={editingId ? 'Update' : 'Record'}
         />
       </Modal>
     </div>

@@ -128,6 +128,21 @@ export const Form = ({ onSubmit, fields, submitLabel = 'Submit', isLoading = fal
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               rows={4}
             />
+          ) : field.type === 'select' ? (
+            <select
+              name={field.name}
+              value={formData[field.name]}
+              onChange={handleChange}
+              required={field.required}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <option value="">Select {field.label.toLowerCase()}</option>
+              {field.options?.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           ) : (
             <input
               type={field.type || 'text'}

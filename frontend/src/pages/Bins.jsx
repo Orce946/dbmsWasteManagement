@@ -269,8 +269,8 @@ export const Bins = () => {
             },
           ]}
           onSubmit={handleSubmit}
-          isSubmitting={isSubmitting}
-          submitText={editingId ? 'Update' : 'Create'}
+          isLoading={isSubmitting}
+          submitLabel={editingId ? 'Update' : 'Create'}
         />
       </Modal>
 
