@@ -36,6 +36,8 @@ export const Payments = () => {
       setBills(response.data.data || []);
     } catch (error) {
       console.error('Error fetching bills:', error);
+      showNotification('Error fetching bills', 'error');
+      setBills([]);
     }
   };
 
@@ -180,7 +182,7 @@ export const Payments = () => {
               name: 'bill_id',
               label: 'Bill',
               type: 'select',
-              options: bills.map((b) => ({ value: b.bill_id, label: `Bill #${b.bill_id} - ${b.citizen_name || 'Unknown'} ($${b.amount})` })),
+              options: (bills || []).map((b) => ({ value: b.bill_id, label: `Bill #${b.bill_id} - ${b.citizen_name || 'Unknown'} ($${b.amount})` })),
               required: true,
             },
             {
