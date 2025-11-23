@@ -59,11 +59,16 @@ export const Payments = () => {
 
   // Filter and search payments
   const filteredPayments = useMemo(() => {
+    if (!Array.isArray(payments)) return [];
     return payments.filter((payment) => {
-      const matchesSearch = payment.payment_id.toString().includes(searchTerm) ||
-                           payment.amount.toString().includes(searchTerm) ||
-                           payment.citizen_name?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesFilter = filterMethod === 'All' || payment.payment_method === filterMethod;
+      const paymentId = (payment?.payment_id || '').toString();
+      const amount = (payment?.amount || '').toString();
+      const citizenName = (payment?.citizen_name || '').toLowerCase();
+      
+      const matchesSearch = paymentId.includes(searchTerm) ||
+                           amount.includes(searchTerm) ||
+                           citizenName.includes(searchTerm.toLowerCase());
+      const matchesFilter = filterMethod === 'All' || payment?.payment_method === filterMethod;
       return matchesSearch && matchesFilter;
     });
   }, [payments, searchTerm, filterMethod]);
@@ -140,14 +145,28 @@ export const Payments = () => {
       <Card>
         <Table
           headers={['Payment ID', 'Citizen', 'Bill ID', 'Amount', 'Method', 'Date']}
-          rows={filteredPayments.map((payment) => ({
-            id: payment.payment_id,
-            citizen: payment.citizen_name || '-',
-            bill: payment.bill_id,
-            amount: `$${payment.amount}`,
-            method: payment.payment_method,
-            date: payment.created_at ? new Date(payment.created_at).toLocaleDateString() : '-',
-          }))}
+          rows={filteredPayments.map((payment) => {
+            try {
+              return {
+                id: payment?.payment_id || '-',
+                citizen: payment?.citizen_name || '-',
+                bill: payment?.bill_id || '-',
+                amount: `$${payment?.amount || 0}`,
+                method: payment?.payment_method || '-',
+                date: payment?.created_at ? new Date(payment.created_at).toLocaleDateString() : '-',
+              };
+            } catch (e) {
+              console.error('Error rendering payment row:', e);
+              return {
+                id: '-',
+                citizen: '-',
+                bill: '-',
+                amount: '-',
+                method: '-',
+                date: '-',
+              };
+            }
+          })}
           actions={(row) => [
             <Button
               key="delete"
