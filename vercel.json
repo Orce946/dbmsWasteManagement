@@ -1,0 +1,13 @@
+{
+  "buildCommand": "cd frontend && npm run build",
+  "outputDirectory": "frontend/dist",
+  "devCommand": "cd frontend && npm run dev",
+  "installCommand": "npm install && cd frontend && npm install",
+  "framework": "vite",
+  "nodeVersion": "18.x",
+  "env": {
+    "VITE_API_BASE_URL": "@vite_api_base_url",
+    "VITE_APP_NAME": "Waste Management System",
+    "VITE_APP_VERSION": "1.0.0"
+  }
+}
