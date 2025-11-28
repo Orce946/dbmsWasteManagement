@@ -25,13 +25,11 @@ export default defineConfig({
       protocol: 'ws',
     },
   },
+  esbuild: {
+    drop: ['console'],
+  },
   build: {
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-      },
-    },
+    minify: 'esbuild',
     rollupOptions: {
       output: {
         manualChunks: {
